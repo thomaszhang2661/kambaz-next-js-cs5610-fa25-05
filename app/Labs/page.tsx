@@ -25,7 +25,6 @@
 // }
 
 import { redirect } from "next/navigation";
-import TOC from "./TOC";
 
 export default function Labs() {
   redirect("/Labs/Lab1");
