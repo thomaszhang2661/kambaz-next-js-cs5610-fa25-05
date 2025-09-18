@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div id="wd-kambaz">
@@ -8,22 +10,22 @@ export default function Home() {
         <h2>Navigation</h2>
         <ul>
           <li>
-            <a href="/Labs/Lab1">Lab Exercises</a>
+            <Link href="/Labs/Lab1">Lab Exercises</Link>
           </li>
           <li>
-            <a href="/Account">Account</a>
+            <Link href="/Account">Account</Link>
           </li>
           <li>
-            <a href="/Dashboard">Dashboard</a>
+            <Link href="/Dashboard">Dashboard</Link>
           </li>
           <li>
-            <a href="/Courses">Courses</a>
+            <Link href="/Courses">Courses</Link>
           </li>
           <li>
-            <a href="/Calendar">Calendar</a>
+            <Link href="/Calendar">Calendar</Link>
           </li>
           <li>
-            <a href="/Inbox">Inbox</a>
+            <Link href="/Inbox">Inbox</Link>
           </li>
         </ul>
       </nav>
@@ -56,18 +58,18 @@ export default function Home() {
           <h3>Quick Links</h3>
           <ul>
             <li>
-              <a href="/Labs/Lab1">View Lab Exercises</a>
+              <Link href="/Labs/Lab1">View Lab Exercises</Link>
             </li>
             <li>
-              <a
+              <Link
                 href="https://github.com/yourusername/your-repo"
                 target="_blank"
               >
                 Source Code
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/profile">Student Profile</a>
+              <Link href="/profile">Student Profile</Link>
             </li>
           </ul>
         </div>
