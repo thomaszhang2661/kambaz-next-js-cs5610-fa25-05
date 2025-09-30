@@ -1,0 +1,183 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Kambaz Navigation Sidebar */
+#wd-kambaz-navigation {
+  width: 110px !important;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#wd-kambaz-navigation .list-group-item {
+  padding: 12px 8px;
+  border: none !important;
+  border-radius: 0 !important;
+  transition: background-color 0.2s ease;
+  display: block;
+  text-align: center;
+}
+
+#wd-kambaz-navigation .list-group-item:hover {
+  background-color: #333 !important;
+}
+
+#wd-kambaz-navigation .list-group-item:not(.bg-white):hover span,
+#wd-kambaz-navigation .list-group-item:not(.bg-white):hover svg {
+  color: #fff !important;
+}
+
+/* Active navigation item (Dashboard) */
+#wd-kambaz-navigation .list-group-item.bg-white {
+  background-color: #fff !important;
+}
+
+#wd-kambaz-navigation .list-group-item.bg-white:hover {
+  background-color: #f8f9fa !important;
+}
+
+#wd-kambaz-navigation .list-group-item.bg-white:hover span,
+#wd-kambaz-navigation .list-group-item.bg-white:hover svg {
+  color: #dc3545 !important;
+}
+
+/* Navigation text styling */
+#wd-kambaz-navigation .small {
+  font-size: 11px !important;
+  font-weight: 500;
+  display: block;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Icon sizing */
+#wd-kambaz-navigation .fs-1 {
+  font-size: 1.5rem !important;
+  margin-bottom: 2px;
+}
+
+/* Logo styling */
+#wd-kambaz-navigation img {
+  max-width: 65px;
+  height: auto;
+}
+
+@media (min-width: 768px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-left: 130px !important;
+  }
+}
+
+/* Course Navigation Sidebar Styles */
+.list-group.wd > .list-group-item.active {
+  color: black;
+  background-color: white;
+  border-left: 3px solid black !important;
+}
+
+.list-group.wd > .list-group-item {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 0;
+}
+
+.list-group.wd > .list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Mobile navigation styles */
+@media (max-width: 767px) {
+  #wd-kambaz .wd-main-content-offset {
+    padding-top: 60px !important;
+  }
+}
+
+/* Dashboard course styling */
+#wd-dashboard {
+  padding: 20px;
+}
+
+#wd-dashboard-courses {
+  margin-top: 30px;
+}
+
+#wd-dashboard-courses .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.wd-dashboard-course {
+  margin-bottom: 35px;
+  display: flex;
+  justify-content: center;
+}
+
+.wd-dashboard-course .card {
+  height: 100%;
+  transition: transform 0.2s;
+  width: 100%;
+  max-width: 270px;
+  min-width: 250px;
+}
+
+.wd-dashboard-course .card:hover {
+  transform: translateY(-5px);
+}
+
+.wd-dashboard-course-link {
+  height: 100%;
+  display: block;
+}
+
+.wd-dashboard-course-title {
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.wd-dashboard-course-description {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Modules styling */
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+
+.list-group-item {
+  --bs-list-group-border-color: gray;
+}
+
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
+
+.border-gray {
+  border-color: gray !important;
+}
+
+/* Assignment styling */
+.wd-assignment-list-item {
+  border-left: 3px solid green !important;
+}
+
+.wd-assignment-group {
+  border-color: gray !important;
+}
+
+.wd-assignment-items .list-group-item {
+  border-left: 3px solid green !important;
+}

@@ -17,7 +17,6 @@ export default function CourseNavigation() {
       >
         Home
       </Link>
-      <br />
 
       <Link
         href="/Courses/1234/Modules"
@@ -28,7 +27,6 @@ export default function CourseNavigation() {
       >
         Modules
       </Link>
-      <br />
 
       <Link
         href="/Courses/1234/Piazza"
@@ -37,7 +35,6 @@ export default function CourseNavigation() {
       >
         Piazza
       </Link>
-      <br />
 
       <Link
         href="/Courses/1234/Zoom"
@@ -46,7 +43,6 @@ export default function CourseNavigation() {
       >
         Zoom
       </Link>
-      <br />
 
       <Link
         href="/Courses/1234/Assignments"
@@ -57,7 +53,6 @@ export default function CourseNavigation() {
       >
         Assignments
       </Link>
-      <br />
 
       <Link
         href="/Courses/1234/Quizzes"
@@ -66,10 +61,17 @@ export default function CourseNavigation() {
       >
         Quizzes
       </Link>
-      <br />
 
       <Link
-        href="/Courses/1234/People/Table"
+        href="/Courses/1234/Grades"
+        id="wd-course-grades-link"
+        className="list-group-item text-danger border-0"
+      >
+        Grades
+      </Link>
+
+      <Link
+        href="/Courses/1234/People"
         id="wd-course-people-link"
         className={`list-group-item border-0 ${
           pathname.includes("/People") ? "active" : "text-danger"
@@ -77,7 +79,6 @@ export default function CourseNavigation() {
       >
         People
       </Link>
-      <br />
     </div>
   );
 }

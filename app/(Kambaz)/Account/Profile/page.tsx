@@ -1,28 +1,65 @@
 import Link from "next/link";
+import { FormControl, Form, Button } from "react-bootstrap";
+
 export default function Profile() {
   return (
-    <div id="wd-profile-screen">
-      <h3>Profile</h3>
-      <input defaultValue="alice" placeholder="username" />
-      <br />
-      <input defaultValue="123" placeholder="password" type="password" />
-      <br />
-      <input defaultValue="Alice" placeholder="First Name" />
-      <br />
-      <input defaultValue="Wonderland" placeholder="Last Name" />
-      <br />
-      <input defaultValue="2000-01-01" type="date" id="wd-dob" />
-      <br />
-      <input defaultValue="alice@wonderland" type="email" id="wd-email" />
-      <br />
-      <select defaultValue="FACULTY" id="wd-role">
-        <option value="USER">User</option>
-        <option value="ADMIN">Admin</option>
-        <option value="FACULTY">Faculty</option>
-        <option value="STUDENT">Student</option>
-      </select>
-      <br />
-      <Link href="Signin"> Sign out </Link>
+    <div
+      id="wd-profile-screen"
+      className="container mt-4"
+      style={{ maxWidth: "400px" }}
+    >
+      <h1>Profile</h1>
+      <FormControl
+        id="wd-username"
+        defaultValue="alice"
+        placeholder="username"
+        className="mb-2"
+      />
+      <FormControl
+        id="wd-password"
+        defaultValue="123"
+        placeholder="password"
+        type="password"
+        className="mb-2"
+      />
+      <FormControl
+        id="wd-firstname"
+        defaultValue="Alice"
+        placeholder="First Name"
+        className="mb-2"
+      />
+      <FormControl
+        id="wd-lastname"
+        defaultValue="Wonderland"
+        placeholder="Last Name"
+        className="mb-2"
+      />
+      <FormControl
+        id="wd-dob"
+        defaultValue="2000-01-01"
+        type="date"
+        className="mb-2"
+      />
+      <FormControl
+        id="wd-email"
+        defaultValue="alice@wonderland.com"
+        type="email"
+        className="mb-2"
+      />
+      <Form.Select id="wd-role" defaultValue="User" className="mb-2">
+        <option value="User">User</option>
+        <option value="Admin">Admin</option>
+        <option value="Faculty">Faculty</option>
+        <option value="Student">Student</option>
+      </Form.Select>
+      {/* <Button
+        variant="danger"
+        className="w-100"
+        as={Link}
+        href="/Account/Signin"
+      >
+        Signout
+      </Button> */}
     </div>
   );
 }
