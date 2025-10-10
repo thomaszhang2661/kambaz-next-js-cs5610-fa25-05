@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "u1",
+    "firstName": "Alice",
+    "lastName": "Zhang",
+    "loginId": "alice",
+    "section": "001",
+    "role": "Student",
+    "lastActivity": "2025-10-01",
+    "totalActivity": 42
+  },
+  {
+    "_id": "u2",
+    "firstName": "Bob",
+    "lastName": "Smith",
+    "loginId": "bob",
+    "section": "001",
+    "role": "TA",
+    "lastActivity": "2025-09-30",
+    "totalActivity": 120
+  },
+  {
+    "_id": "u3",
+    "firstName": "Carol",
+    "lastName": "Lee",
+    "loginId": "carol",
+    "section": "002",
+    "role": "Student",
+    "lastActivity": "2025-10-02",
+    "totalActivity": 10
+  }
+]
