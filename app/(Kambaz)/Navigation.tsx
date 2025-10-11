@@ -15,7 +15,7 @@ export default function KambazNavigation() {
 
   const links: { label: string; path: string; Icon: ElementType }[] = [
     { label: "Dashboard", path: "/Dashboard", Icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Dashboard", Icon: LiaBookSolid },
+    { label: "Courses", path: "/Courses", Icon: LiaBookSolid },
     { label: "Calendar", path: "/Calendar", Icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", Icon: FaInbox },
     { label: "Labs", path: "/Labs", Icon: MdOutlineScience },
