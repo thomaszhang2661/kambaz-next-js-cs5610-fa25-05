@@ -110,7 +110,15 @@ export default function Editor() {
         <Button variant="secondary" className="me-2" onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant="danger">Save</Button>
+        <Button
+          variant="danger"
+          onClick={() => {
+            // minimal save behaviour: navigate back to assignments list
+            router.push(`/Courses/${cid}/Assignments`);
+          }}
+        >
+          Save
+        </Button>
       </Form>
     </div>
   );

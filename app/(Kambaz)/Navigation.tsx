@@ -7,6 +7,7 @@ import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 import { MdOutlineScience } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 import type { ElementType } from "react";
 
 export default function KambazNavigation() {
@@ -14,7 +15,7 @@ export default function KambazNavigation() {
 
   const links: { label: string; path: string; Icon: ElementType }[] = [
     { label: "Dashboard", path: "/Dashboard", Icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Courses/1234/Home", Icon: LiaBookSolid },
+    { label: "Courses", path: "/Dashboard", Icon: LiaBookSolid },
     { label: "Calendar", path: "/Calendar", Icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", Icon: FaInbox },
     { label: "Labs", path: "/Labs", Icon: MdOutlineScience },
@@ -33,9 +34,10 @@ export default function KambazNavigation() {
         href="https://www.northeastern.edu/"
         id="wd-neu-link"
       >
-        <img
+        <Image
           src="/images/NEU.svg"
-          width="65px"
+          width={65}
+          height={65}
           alt="Northeastern University"
           style={{
             filter:
@@ -80,7 +82,7 @@ export default function KambazNavigation() {
         return (
           <Link
             href={link.path}
-            key={link.path}
+            key={`${link.path}-${link.label}`}
             className={`list-group-item border-0 text-center text-decoration-none py-3 ${
               isActive ? "bg-white" : "bg-black"
             }`}

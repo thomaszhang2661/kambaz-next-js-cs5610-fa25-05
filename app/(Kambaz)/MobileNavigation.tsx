@@ -12,10 +12,7 @@ import {
 } from "react-bootstrap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AiOutlineDashboard } from "react-icons/ai";
-import { IoCalendarOutline } from "react-icons/io5";
-import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import Image from "next/image";
 
 interface MobileNavigationProps {
   courseId?: string;
@@ -53,12 +50,12 @@ export default function MobileNavigation({ courseId }: MobileNavigationProps) {
         </button>
 
         <div className="text-center">
-          <img
+          <Image
             src="/images/NEU.svg"
             alt="NEU"
+            width={30}
+            height={30}
             style={{
-              width: "30px",
-              height: "30px",
               filter:
                 "brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(83%) contrast(87%)",
             }}
@@ -86,12 +83,12 @@ export default function MobileNavigation({ courseId }: MobileNavigationProps) {
       >
         <OffcanvasHeader closeButton className="bg-black text-white">
           <div className="d-flex align-items-center">
-            <img
+            <Image
               src="/images/NEU.svg"
               alt="NEU"
+              width={40}
+              height={40}
               style={{
-                width: "40px",
-                height: "40px",
                 marginRight: "10px",
                 filter:
                   "brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(83%) contrast(87%)",

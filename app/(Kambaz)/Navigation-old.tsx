@@ -44,6 +44,7 @@ import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import Image from "next/image";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -72,12 +73,12 @@ export default function KambazNavigation() {
           id="wd-neu-link"
           className="text-decoration-none"
         >
-          <img
+          <Image
             src="/images/NEU.svg"
             alt="NEU"
+            width={75}
+            height={75}
             style={{
-              width: "75px",
-              height: "75px",
               padding: "10px",
               filter:
                 "brightness(0) saturate(100%) invert(27%) sepia(51%) saturate(2878%) hue-rotate(346deg) brightness(104%) contrast(97%)",

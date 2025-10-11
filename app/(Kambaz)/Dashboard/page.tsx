@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import * as db from "../Database";
 
 type Course = {
@@ -36,11 +37,13 @@ export default function Dashboard() {
                     href={`/Courses/${id}/Home`}
                     className="wd-dashboard-course-link text-decoration-none text-dark"
                   >
-                    <img
+                    <Image
                       src={image}
                       className="card-img-top"
                       style={{ height: "160px", objectFit: "cover" }}
-                      alt={title}
+                      alt={title || "Course image"}
+                      width={400}
+                      height={160}
                     />
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title wd-dashboard-course-title">

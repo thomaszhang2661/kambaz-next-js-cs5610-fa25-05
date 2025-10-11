@@ -3,6 +3,8 @@ import CourseNavigation from "./Navigation";
 import MobileNavigation from "../../MobileNavigation";
 import { FaAlignJustify } from "react-icons/fa";
 import { courses } from "../../Database";
+import Breadcrumb from "./Breadcrumb";
+import { redirect } from "next/navigation";
 
 type Course = { _id?: string; id?: string; name?: string };
 
@@ -12,6 +14,10 @@ export default async function CoursesLayout({
 }: Readonly<{ children: ReactNode; params: Promise<{ cid: string }> }>) {
   const { cid } = await params;
   const course = courses.find((c: Course) => c._id === cid || c.id === cid);
+  if (!course) {
+    // if course id not found, redirect to Dashboard
+    redirect("/Dashboard");
+  }
   return (
     <div id="wd-courses">
       <MobileNavigation courseId={cid} />
@@ -19,6 +25,7 @@ export default async function CoursesLayout({
         <FaAlignJustify className="me-4 fs-4 mb-1" />
         {course ? course.name : `Course ${cid}`}
       </h2>
+      <Breadcrumb course={course} />
       <hr />
       <div className="d-flex">
         <div className="d-none d-md-block">

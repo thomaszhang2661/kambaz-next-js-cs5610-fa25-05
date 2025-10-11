@@ -9,32 +9,41 @@ export default function CourseNavigation() {
   const cid = params?.cid || "";
 
   const links = [
-    "Home",
-    "Modules",
-    "Piazza",
-    "Zoom",
-    "Assignments",
-    "Quizzes",
-    "People/Table",
+    { label: "Home", path: "Home" },
+    { label: "Modules", path: "Modules" },
+    { label: "Piazza", path: "Piazza" },
+    { label: "Zoom", path: "Zoom" },
+    { label: "Assignments", path: "Assignments" },
+    { label: "Quizzes", path: "Quizzes" },
+    { label: "Grades", path: "Grades" },
+    { label: "People", path: "People" },
   ];
+
+  // derive the current section segment from pathname: /Courses/<cid>/<section>
+  const parts = pathname.split("/").filter(Boolean); // ['Courses','<cid>','<section>']
+  const currentSection = parts.length >= 3 ? parts[2] : "";
 
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      {links.map((label) => {
-        const pathSegment = label;
-        const href = `/Courses/${cid}/${pathSegment}`;
-        const isActive = pathname.includes(`/${pathSegment.split("/")[0]}`);
-        const display = label.includes("/") ? label.split("/")[0] : label;
+      {links.map((link) => {
+        const href = `/Courses/${cid}/${link.path}`;
+        const sectionSegment = link.path.split("/")[0];
+        const isActive =
+          (sectionSegment.toLowerCase() === "home" &&
+            (currentSection === "" ||
+              currentSection.toLowerCase() === "home")) ||
+          currentSection.toLowerCase() === sectionSegment.toLowerCase();
+        const id = `wd-course-${link.label.toLowerCase()}-link`;
         return (
           <div key={href}>
             <Link
               href={href}
-              id={`wd-course-${display.toLowerCase()}-link`}
+              id={id}
               className={`list-group-item border-0 ${
                 isActive ? "active" : "text-danger"
               }`}
             >
-              {display}
+              {link.label}
             </Link>
             <br />
           </div>

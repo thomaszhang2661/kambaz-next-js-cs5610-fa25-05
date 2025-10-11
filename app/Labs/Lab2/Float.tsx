@@ -1,12 +1,17 @@
+import Image from "next/image";
+
 export default function Float() {
   return (
     <div id="wd-float-divs">
       <h2>Float</h2>
       <div>
-        <img
+        <Image
           className="wd-float-right"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
           alt="Starship"
+          width={300}
+          height={200}
+          unoptimized
         />
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius hic veniam
         dignissimos atque iste accusamus, voluptas earum doloremque modi culpa
@@ -18,10 +23,13 @@ export default function Float() {
         consectetur adipisicing elit. Eius hic veniam dignissimos atque iste
         accusamus, voluptas earum doloremque modi culpa rerum consectetur magni
         quaerat beatae perspiciatis exercitationem blanditiis. Commodi, eveniet!
-        <img
+        <Image
           className="wd-float-left"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
           alt="Starship"
+          width={300}
+          height={200}
+          unoptimized
         />
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex molestias
         expedita commodi reiciendis cupiditate assumenda corrupti fuga dolore
@@ -32,10 +40,13 @@ export default function Float() {
         exercitationem blanditiis. Commodi, eveniet! Lorem ipsum dolor sit amet
         consectetur adipisicing elit. Ex molestias expedita commodi reiciendis
         cupiditate assumenda corrupti fuga dolore amet minus pariatur optio.
-        <img
+        <Image
           className="wd-float-right"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
           alt="Starship"
+          width={300}
+          height={200}
+          unoptimized
         />
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius hic veniam
         dignissimos atque iste accusamus, voluptas earum doloremque modi culpa
@@ -46,10 +57,13 @@ export default function Float() {
         enim hic, ad eligendi provident mollitia. Lorem ipsum dolor sit amet
         consectetur adipisicing elit. Eius hic veniam dignissimos atque iste
         accusamus, voluptas earum doloremque modi culpa rerum consectetur.
-        <img
+        <Image
           className="wd-float-left"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
           alt="Starship"
+          width={300}
+          height={200}
+          unoptimized
         />
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex molestias
         expedita commodi reiciendis cupiditate assumenda corrupti fuga dolore
@@ -74,10 +88,13 @@ export default function Float() {
         <div className="wd-float-left wd-dimension-portrait wd-bg-color-red">
           Red
         </div>
-        <img
+        <Image
           className="wd-float-right"
           src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
           alt="Starship"
+          width={300}
+          height={200}
+          unoptimized
         />
         <div className="wd-float-done"></div>
       </div>
