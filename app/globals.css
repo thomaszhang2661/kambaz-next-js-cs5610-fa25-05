@@ -24,3 +24,79 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Lab4 specific styles to match book screenshots */
+#wd-lab4 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Counter styles (both Redux and local Counter) */
+#wd-counter-redux,
+#wd-counter {
+  text-align: center;
+  margin: 24px 0;
+}
+#wd-counter-redux h3,
+#wd-counter h2 + h2,
+#wd-counter h2 {
+  font-size: 48px;
+  margin: 8px 0 16px;
+}
+#wd-counter-redux .btn,
+#wd-counter button {
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 10px;
+  min-width: 110px;
+}
+
+/* Color palette tuned to book: green up, red down, yellow for update */
+#wd-lab4 .btn.btn-primary {
+  background-color: #0d6efd; /* keep blue for primary where used */
+  border-color: #0d6efd;
+}
+#wd-lab4 #wd-counter-up-click,
+#wd-lab4 .btn.btn-success,
+#wd-lab4 .btn-success {
+  background-color: #198754 !important; /* green */
+  border-color: #198754 !important;
+  color: #fff;
+}
+#wd-lab4 #wd-counter-down-click,
+#wd-lab4 .btn.btn-danger,
+#wd-lab4 .btn-danger {
+  background-color: #dc3545 !important; /* red */
+  border-color: #dc3545 !important;
+  color: #fff;
+}
+#wd-lab4 .btn.btn-warning,
+#wd-lab4 .btn-warning {
+  background-color: #ffc107 !important; /* yellow */
+  border-color: #ffc107 !important;
+  color: #000;
+}
+
+/* Todo card + list style */
+#wd-todo-redux .card {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  max-width: 620px;
+}
+#wd-todo-redux .list-group-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+#wd-todo-redux .form-control {
+  border-radius: 6px;
+}
+#wd-todo-redux .btn {
+  border-radius: 6px;
+}
+
+/* Make headings match book style */
+#wd-lab4 h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
