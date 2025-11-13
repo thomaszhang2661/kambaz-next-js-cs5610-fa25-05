@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { modules } from "../Database";
 
 type Lesson = { _id?: string; name?: string };
-type Module = { _id?: string; course?: string; name?: string; lessons?: Lesson[] };
+type Module = {
+  _id?: string;
+  course?: string;
+  name?: string;
+  lessons?: Lesson[];
+};
 
 const initialState: { modules: Module[] } = {
-  modules: (modules || []) as Module[],
+  modules: [] as Module[],
 };
 
 const modulesSlice = createSlice({
@@ -14,7 +18,7 @@ const modulesSlice = createSlice({
   reducers: {
     addNewModule: (state, action: PayloadAction<Module>) => {
       const m = action.payload;
-      const newModule: Module = { ...m, _id: new Date().getTime().toString() };
+      const newModule: Module = { ...m };
       state.modules = [...state.modules, newModule];
     },
     deleteModule: (state, action: PayloadAction<string>) => {
@@ -25,8 +29,12 @@ const modulesSlice = createSlice({
       const m = action.payload;
       state.modules = state.modules.map((x) => (x._id === m._id ? m : x));
     },
+    setModules: (state, action: PayloadAction<Module[]>) => {
+      state.modules = action.payload;
+    },
   },
 });
 
-export const { addNewModule, deleteModule, updateModule } = modulesSlice.actions;
+export const { addNewModule, deleteModule, updateModule, setModules } =
+  modulesSlice.actions;
 export default modulesSlice.reducer;

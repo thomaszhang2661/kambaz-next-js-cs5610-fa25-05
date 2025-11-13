@@ -2,9 +2,15 @@ import { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 import MobileNavigation from "../../MobileNavigation";
 import { FaAlignJustify } from "react-icons/fa";
-import { courses } from "../../Database";
 import Breadcrumb from "./Breadcrumb";
 import { redirect } from "next/navigation";
+
+async function fetchCourses() {
+  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
+  const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
+  if (!res.ok) return [];
+  return res.json();
+}
 
 type Course = { _id?: string; id?: string; name?: string };
 
@@ -13,6 +19,7 @@ export default async function CoursesLayout({
   params,
 }: Readonly<{ children: ReactNode; params: Promise<{ cid: string }> }>) {
   const { cid } = await params;
+  const courses = await fetchCourses();
   const course = courses.find((c: Course) => c._id === cid || c.id === cid);
   if (!course) {
     // if course id not found, redirect to Dashboard

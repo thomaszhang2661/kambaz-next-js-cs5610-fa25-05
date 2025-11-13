@@ -1,11 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import * as db from "../Database";
 import { useSelector, useDispatch } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
+import {
+  addCourse,
+  setCourses,
+  deleteCourse,
+  updateCourse,
+} from "../Courses/reducer";
 import { FormControl, Button } from "react-bootstrap";
+import * as client from "../Courses/client";
+import { RootState } from "../store";
 
 type Course = {
   _id?: string;
@@ -18,17 +24,15 @@ type Course = {
   description?: string;
   image?: string;
 };
-type RootState = { coursesReducer: { courses: Course[] } };
 
 export default function Dashboard() {
-  const { courses } = useSelector(
-    (state: RootState) =>
-      state.coursesReducer || { courses: (db.courses || []) as Course[] }
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
   );
   const dispatch = useDispatch();
 
   const [course, setCourse] = useState<Course>({
-    _id: "0",
     name: "New Course",
     number: "New Number",
     startDate: "2023-09-10",
@@ -37,15 +41,43 @@ export default function Dashboard() {
     description: "New Description",
   });
 
-  const handleAddNew = () => {
-    dispatch(addNewCourse(course));
+  const fetchCourses = async () => {
+    try {
+      const data = await client.findMyCourses();
+      dispatch(setCourses(data));
+    } catch (err) {
+      console.error(err);
+    }
   };
-  const handleDelete = (courseId?: string) => {
+
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
+  const handleAddNew = async () => {
+    try {
+      const newCourse = await client.createCourse(course);
+      dispatch(addCourse(newCourse));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleDelete = async (courseId?: string) => {
     if (!courseId) return;
-    dispatch(deleteCourse(courseId));
+    try {
+      await client.deleteCourse(courseId);
+      dispatch(deleteCourse(courseId));
+    } catch (err) {
+      console.error(err);
+    }
   };
-  const handleUpdate = () => {
-    dispatch(updateCourse(course));
+  const handleUpdate = async () => {
+    try {
+      await client.updateCourse(course);
+      dispatch(updateCourse(course));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

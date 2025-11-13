@@ -1,0 +1,40 @@
+
+> kambaz-next-js-cs5610-fa25-05@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.5.3 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://10.0.0.20:3000
+   - Environments: .env.development
+
+ ✓ Starting...
+ ✓ Ready in 3.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 7.5s
+ GET / 307 in 8512ms
+ GET / 307 in 751ms
+ ○ Compiling /Account/Signin ...
+ ✓ Compiled /Account/Signin in 7.8s
+ GET /Account/Signin 200 in 9489ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1140ms
+ GET /favicon.ico?favicon.0b3bf435.ico 200 in 1978ms
+ ○ Compiling /Dashboard ...
+ GET /Dashboard 200 in 2364ms
+ GET /Courses 200 in 1617ms
+ GET /Dashboard 200 in 209ms
+ ✓ Compiled /Dashboard in 3.9s
+ GET /Account/Profile 200 in 1445ms
+ GET /Courses 200 in 255ms
+ ○ Compiling /Courses/[cid]/Home ...
+ GET /Dashboard 200 in 200ms
+ GET /Courses 200 in 395ms
+ ✓ Compiled /Courses/[cid]/Home in 4.2s
+ GET /Courses/CS101/Home 200 in 6284ms
+ GET /Courses/CS101/Home 200 in 319ms
+ GET /Courses/CS101/Home 200 in 273ms
+ GET /Courses/CS101/Home 200 in 470ms
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 576ms
+ GET /Calendar 404 in 766ms
+ GET /Calendar 404 in 309ms

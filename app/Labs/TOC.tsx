@@ -33,6 +33,11 @@ export default function TOC() {
         </NavLink>
       </NavItem>
       <NavItem>
+        <NavLink href="/Labs/Lab5" as={Link} active={pathname.includes("Lab5")}>
+          Lab 5
+        </NavLink>
+      </NavItem>
+      <NavItem>
         <NavLink href="/" as={Link}>
           Kambaz
         </NavLink>
@@ -43,6 +48,22 @@ export default function TOC() {
           id="wd-github"
         >
           My GitHub
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink
+          href={process.env.NEXT_PUBLIC_HTTP_SERVER || "#"}
+          id="wd-node-server"
+        >
+          Node Server
+        </NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink
+          href={process.env.NEXT_PUBLIC_NODE_GITHUB || "#"}
+          id="wd-node-github"
+        >
+          Node GitHub
         </NavLink>
       </NavItem>
     </Nav>

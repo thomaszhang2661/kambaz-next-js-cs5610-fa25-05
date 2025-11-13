@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { courses } from "../Database";
 
 type Course = {
   _id?: string;
@@ -12,7 +11,7 @@ type Course = {
 };
 
 const initialState: { courses: Course[] } = {
-  courses: (courses || []) as Course[],
+  courses: [] as Course[],
 };
 
 const coursesSlice = createSlice({
@@ -21,11 +20,14 @@ const coursesSlice = createSlice({
   reducers: {
     addNewCourse: (state, action: PayloadAction<Course>) => {
       const course = action.payload;
-      const newCourse: Course = {
-        ...course,
-        _id: new Date().getTime().toString(),
-      };
+      const newCourse: Course = { ...course };
       state.courses = [...state.courses, newCourse];
+    },
+    addCourse: (state, action: PayloadAction<Course>) => {
+      state.courses = [...state.courses, action.payload];
+    },
+    setCourses: (state, action: PayloadAction<Course[]>) => {
+      state.courses = action.payload;
     },
     deleteCourse: (state, action: PayloadAction<string>) => {
       const courseId = action.payload;
@@ -40,6 +42,11 @@ const coursesSlice = createSlice({
   },
 });
 
-export const { addNewCourse, deleteCourse, updateCourse } =
-  coursesSlice.actions;
+export const {
+  addNewCourse,
+  addCourse,
+  setCourses,
+  deleteCourse,
+  updateCourse,
+} = coursesSlice.actions;
 export default coursesSlice.reducer;

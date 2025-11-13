@@ -1,6 +1,44 @@
+"use client";
 import { FormControl, Form } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../store";
+import { setCurrentUser } from "../reducer";
+import * as client from "../client";
+import { redirect } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Profile() {
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
+  );
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<any>({});
+
+  useEffect(() => {
+    setProfile(currentUser || {});
+  }, [currentUser]);
+
+  const updateProfile = async () => {
+    try {
+      const updatedProfile = await client.updateUser(profile);
+      dispatch(setCurrentUser(updatedProfile));
+      alert("Profile updated");
+    } catch (err: any) {
+      console.error(err);
+      alert("Failed to update profile");
+    }
+  };
+
+  const signout = async () => {
+    try {
+      await client.signout();
+    } catch (err) {
+      // ignore
+    }
+    dispatch(setCurrentUser(null));
+    redirect("/Account/Signin");
+  };
+
   return (
     <div
       id="wd-profile-screen"
@@ -10,55 +48,48 @@ export default function Profile() {
       <h1>Profile</h1>
       <FormControl
         id="wd-username"
-        defaultValue="alice"
+        value={profile?.username || ""}
         placeholder="username"
         className="mb-2"
+        onChange={(e) => setProfile({ ...profile, username: e.target.value })}
       />
       <FormControl
         id="wd-password"
-        defaultValue="123"
+        value={profile?.password || ""}
         placeholder="password"
         type="password"
         className="mb-2"
+        onChange={(e) => setProfile({ ...profile, password: e.target.value })}
       />
       <FormControl
         id="wd-firstname"
-        defaultValue="Alice"
+        value={profile?.firstName || ""}
         placeholder="First Name"
         className="mb-2"
+        onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
       />
       <FormControl
         id="wd-lastname"
-        defaultValue="Wonderland"
+        value={profile?.lastName || ""}
         placeholder="Last Name"
         className="mb-2"
-      />
-      <FormControl
-        id="wd-dob"
-        defaultValue="2000-01-01"
-        type="date"
-        className="mb-2"
+        onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
       />
       <FormControl
         id="wd-email"
-        defaultValue="alice@wonderland.com"
+        value={profile?.email || ""}
         type="email"
         className="mb-2"
+        onChange={(e) => setProfile({ ...profile, email: e.target.value })}
       />
-      <Form.Select id="wd-role" defaultValue="User" className="mb-2">
-        <option value="User">User</option>
-        <option value="Admin">Admin</option>
-        <option value="Faculty">Faculty</option>
-        <option value="Student">Student</option>
-      </Form.Select>
-      {/* <Button
-        variant="danger"
-        className="w-100"
-        as={Link}
-        href="/Account/Signin"
-      >
-        Signout
-      </Button> */}
+      <div>
+        <button onClick={updateProfile} className="btn btn-primary w-100 mb-2">
+          Update
+        </button>
+        <button onClick={signout} className="btn btn-danger w-100">
+          Sign out
+        </button>
+      </div>
     </div>
   );
 }

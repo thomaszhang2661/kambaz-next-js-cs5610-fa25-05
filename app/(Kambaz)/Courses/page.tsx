@@ -1,9 +1,16 @@
 import { redirect } from "next/navigation";
-import { courses } from "../Database";
 
 type Course = { _id?: string; id?: string };
 
-export default function CoursesIndex() {
+async function fetchCourses(): Promise<Course[]> {
+  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
+  const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+export default async function CoursesIndex() {
+  const courses = await fetchCourses();
   const first = courses && courses.length ? (courses[0] as Course) : null;
   if (!first) {
     // nothing to show — fall back to Dashboard

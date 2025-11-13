@@ -6,7 +6,8 @@ import { BsGripVertical } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
 import AssignmentsControls from "./AssignmentsControls";
 import { useParams } from "next/navigation";
-import * as db from "../../../Database";
+import { useEffect, useState } from "react";
+import { findAssignmentsForCourse } from "../../client";
 
 type Assignment = {
   _id: string;
@@ -21,10 +22,12 @@ type Assignment = {
 export default function Assignments() {
   const params = useParams() as { cid?: string };
   const cid = params?.cid || "";
+  const [assignments, setAssignments] = useState<Assignment[]>([]);
 
-  const assignments: Assignment[] = (db.assignments || []).filter(
-    (a: Assignment) => a.course === cid
-  );
+  useEffect(() => {
+    if (!cid) return;
+    findAssignmentsForCourse(cid).then((data) => setAssignments(data || []));
+  }, [cid]);
 
   return (
     <div id="wd-assignments">

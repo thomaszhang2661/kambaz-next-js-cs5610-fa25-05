@@ -3,7 +3,14 @@
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 import { useParams } from "next/navigation";
-import * as db from "../../../../Database";
+import { useEffect, useState } from "react";
+import {
+  findPeopleForCourse,
+  createUserAdmin,
+  enrollUserInCourse,
+  unenrollUserFromCourseById,
+  deleteUser,
+} from "../../../client";
 
 type User = {
   _id: string;
@@ -16,19 +23,57 @@ type User = {
   totalActivity?: number;
 };
 
-type Enrollment = { _id: string; user: string; course: string };
-
 export default function PeopleTable() {
   const params = useParams() as { cid?: string };
   const cid = params?.cid || "";
+  const [users, setUsers] = useState<User[]>([]);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("Student");
 
-  const enrollments: Enrollment[] = (db.enrollments || []).filter(
-    (e: Enrollment) => e.course === cid
-  );
+  useEffect(() => {
+    if (!cid) return;
+    findPeopleForCourse(cid).then((data: User[]) => setUsers(data || []));
+  }, [cid]);
 
-  const users: User[] = enrollments
-    .map((e) => (db.users || []).find((u: User) => u._id === e.user))
-    .filter(Boolean) as User[];
+  const refresh = () => {
+    if (!cid) return;
+    findPeopleForCourse(cid).then((data: User[]) => setUsers(data || []));
+  };
+
+  const handleAddPerson = async (e: any) => {
+    e.preventDefault();
+    const newUser = await createUserAdmin({
+      firstName,
+      lastName,
+      username,
+      password,
+      role,
+    });
+    // enroll into course
+    await enrollUserInCourse(cid, newUser._id);
+    // clear form
+    setFirstName("");
+    setLastName("");
+    setUsername("");
+    setPassword("");
+    setRole("Student");
+    refresh();
+  };
+
+  const handleRemoveFromCourse = async (userId: string) => {
+    await unenrollUserFromCourseById(cid, userId);
+    refresh();
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    // first unenroll from this course to keep DB consistent
+    await unenrollUserFromCourseById(cid, userId);
+    await deleteUser(userId);
+    refresh();
+  };
 
   return (
     <div id="wd-people-table">
@@ -56,10 +101,85 @@ export default function PeopleTable() {
               <td className="wd-role">{u.role}</td>
               <td className="wd-last-activity">{u.lastActivity}</td>
               <td className="wd-total-activity">{u.totalActivity}</td>
+              <td>
+                <button
+                  id={`wd-remove-${u._id}`}
+                  className="btn btn-sm btn-warning me-2"
+                  onClick={() => handleRemoveFromCourse(u._id)}
+                >
+                  Remove
+                </button>
+                <button
+                  id={`wd-delete-${u._id}`}
+                  className="btn btn-sm btn-danger"
+                  onClick={() => handleDeleteUser(u._id)}
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
+
+      <hr />
+      <form id="wd-add-person-form" onSubmit={handleAddPerson}>
+        <div className="mb-2">
+          <input
+            id="wd-add-person-firstname"
+            placeholder="First name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-2">
+          <input
+            id="wd-add-person-lastname"
+            placeholder="Last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-2">
+          <input
+            id="wd-add-person-username"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-2">
+          <input
+            id="wd-add-person-password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-2">
+          <select
+            id="wd-add-person-role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="form-select"
+          >
+            <option>Student</option>
+            <option>TA</option>
+            <option>Instructor</option>
+          </select>
+        </div>
+        <button
+          id="wd-add-person-submit"
+          className="btn btn-primary"
+          type="submit"
+        >
+          Add Person
+        </button>
+      </form>
     </div>
   );
 }
