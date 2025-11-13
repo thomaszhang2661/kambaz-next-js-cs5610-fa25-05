@@ -1,0 +1,91 @@
+
+> kambaz-next-js-cs5610-fa25-05@0.1.0 build
+> next build --turbopack
+
+   ▲ Next.js 15.5.3 (Turbopack)
+
+   Creating an optimized production build ...
+ ⚠ Slow filesystem detected. The benchmark took 124ms. If /Users/zhangjian/iCloud云盘（归档） - 1/work/faith/留学/留学Adam/NEU/cs5610/kambaz-next-js-cs5610-fa25-05/.next is a network drive, consider moving it to a local folder. If you have an antivirus enabled, consider excluding your project directory.
+ ✓ Finished writing to disk in 576ms
+ ✓ Compiled successfully in 14.1s
+   Linting and checking validity of types ...
+
+./app/(Kambaz)/Account/Profile/page.tsx
+2:23  Warning: 'Form' is defined but never used.  @typescript-eslint/no-unused-vars
+35:14  Warning: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/(Kambaz)/Account/Session.tsx
+15:14  Warning: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+23:6  Warning: React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/(Kambaz)/Courses/[cid]/Modules/page.tsx
+38:6  Warning: React Hook useEffect has a missing dependency: 'fetchModules'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/(Kambaz)/Dashboard/page.tsx
+55:6  Warning: React Hook useEffect has a missing dependency: 'fetchCourses'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./app/Labs/Lab5/WorkingWithObjects.tsx
+20:9  Warning: 'fetchTitle' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+21:11  Warning: 't' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+7
+Hello World!
+{
+  bedrooms: 4,
+  bathrooms: 2.5,
+  squareFeet: 2000,
+  address: {
+    street: 'Via Roma',
+    city: 'Roma',
+    state: 'RM',
+    zip: '00100',
+    country: 'Italy'
+  },
+  owners: [ 'Alice', 'Bob' ]
+}
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                        0 B         115 kB
+├ ○ /_not-found                              0 B         115 kB
+├ ○ /Account                                 0 B         176 kB
+├ ○ /Account/Profile                     1.27 kB         177 kB
+├ ○ /Account/Signin                      1.18 kB         177 kB
+├ ○ /Account/Signup                      1.18 kB         177 kB
+├ ƒ /Courses                                 0 B         175 kB
+├ ƒ /Courses/[cid]                           0 B         176 kB
+├ ƒ /Courses/[cid]/Assignments           4.13 kB         180 kB
+├ ƒ /Courses/[cid]/Assignments/[aid]     4.42 kB         180 kB
+├ ƒ /Courses/[cid]/Home                  1.18 kB         192 kB
+├ ƒ /Courses/[cid]/Modules                   0 B         191 kB
+├ ƒ /Courses/[cid]/People                  479 B         176 kB
+├ ƒ /Courses/[cid]/People/Table           1.8 kB         177 kB
+├ ○ /Dashboard                           2.35 kB         177 kB
+├ ○ /Labs                                  500 B         123 kB
+├ ○ /Labs/Lab1                           8.67 kB         131 kB
+├ ○ /Labs/Lab2                           9.99 kB         133 kB
+├ ○ /Labs/Lab3                            3.6 kB         126 kB
+├ ƒ /Labs/Lab3/add/[a]/[b]                 303 B         123 kB
+├ ○ /Labs/Lab4                           4.08 kB         137 kB
+├ ○ /Labs/Lab4/ReduxExamples             1.55 kB         134 kB
+├ ○ /Labs/Lab4/ReduxExamples/HelloRedux      0 B         123 kB
+└ ○ /Labs/Lab5                           3.13 kB         150 kB
++ First Load JS shared by all             146 kB
+  ├ chunks/619ba42e2c361cf0.js             13 kB
+  ├ chunks/7880f8283a6f3daf.js           59.2 kB
+  └ chunks/8082ab48faca5ea1.js           17.2 kB
+  ├ chunks/a87916f933b8012c.css          30.7 kB
+  └ other shared chunks (total)          25.6 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
