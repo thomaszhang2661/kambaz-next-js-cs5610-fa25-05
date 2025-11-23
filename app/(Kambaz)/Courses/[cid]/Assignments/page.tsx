@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
 import AssignmentsControls from "./AssignmentsControls";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { findAssignmentsForCourse } from "../../client";
+import {
+  findAssignmentsForCourse,
+  createAssignmentForCourse,
+  deleteAssignment,
+} from "../../client";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 type Assignment = {
   _id: string;
@@ -22,16 +29,52 @@ type Assignment = {
 export default function Assignments() {
   const params = useParams() as { cid?: string };
   const cid = params?.cid || "";
+  const router = useRouter();
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
+  );
   const [assignments, setAssignments] = useState<Assignment[]>([]);
 
-  useEffect(() => {
+  const fetchAssignments = async () => {
     if (!cid) return;
-    findAssignmentsForCourse(cid).then((data) => setAssignments(data || []));
+    const data = await findAssignmentsForCourse(cid);
+    setAssignments(data || []);
+  };
+
+  useEffect(() => {
+    fetchAssignments();
   }, [cid]);
+
+  const handleCreateAssignment = async () => {
+    try {
+      const newAssignment = {
+        title: "New Assignment",
+        description: "New Assignment Description",
+        points: 100,
+        dueDate: "2025-12-01",
+        availableDate: "2025-11-01",
+      };
+      const created = await createAssignmentForCourse(cid, newAssignment);
+      setAssignments([...assignments, created]);
+      router.push(`/Courses/${cid}/Assignments/${created._id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDeleteAssignment = async (assignmentId: string) => {
+    if (!confirm("Are you sure you want to delete this assignment?")) return;
+    try {
+      await deleteAssignment(assignmentId);
+      setAssignments(assignments.filter((a) => a._id !== assignmentId));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div id="wd-assignments">
-      <AssignmentsControls />
+      <AssignmentsControls onAddAssignment={handleCreateAssignment} />
       <br />
       <br />
       <br />
@@ -43,7 +86,11 @@ export default function Assignments() {
               <BsGripVertical className="me-2 fs-3" />
               ASSIGNMENTS 40% of Total
             </div>
-            <button className="btn btn-outline-secondary">+</button>
+            {currentUser?.role === "FACULTY" && (
+              <Button variant="outline-light" onClick={handleCreateAssignment}>
+                +
+              </Button>
+            )}
           </div>
 
           <ListGroup className="wd-assignment-items rounded-0">
@@ -73,7 +120,20 @@ export default function Assignments() {
                     </div>
                   </div>
                 </div>
-                <div className="float-end">
+                <div className="float-end d-flex align-items-center">
+                  {currentUser?.role === "FACULTY" && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      className="me-2"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDeleteAssignment(a._id);
+                      }}
+                    >
+                      <FaTrash />
+                    </Button>
+                  )}
                   <button className="btn btn-sm">⋮</button>
                 </div>
               </ListGroupItem>

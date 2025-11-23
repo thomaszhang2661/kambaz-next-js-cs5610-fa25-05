@@ -5,17 +5,18 @@ import { FormControl } from "react-bootstrap";
 import * as client from "../client";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [user, setUser] = useState<any>({});
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const signup = async () => {
     try {
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
-      redirect("/Profile");
+      router.push("/Account/Profile");
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || "Unable to sign up");
@@ -49,6 +50,28 @@ export default function Signup() {
         placeholder="verify password"
         type="password"
         className="mb-2"
+      />
+      <FormControl
+        id="wd-firstName"
+        placeholder="First Name"
+        className="mb-2"
+        value={user.firstName || ""}
+        onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+      />
+      <FormControl
+        id="wd-lastName"
+        placeholder="Last Name"
+        className="mb-2"
+        value={user.lastName || ""}
+        onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+      />
+      <FormControl
+        id="wd-email"
+        placeholder="Email"
+        type="email"
+        className="mb-2"
+        value={user.email || ""}
+        onChange={(e) => setUser({ ...user, email: e.target.value })}
       />
       <button
         id="wd-signup-btn"

@@ -1,8 +1,11 @@
 [
   {
     "_id": "u1",
+    "username": "alice",
+    "password": "alice123",
     "firstName": "Alice",
     "lastName": "Zhang",
+    "email": "alice@example.com",
     "loginId": "alice",
     "section": "001",
     "role": "Student",
@@ -11,8 +14,11 @@
   },
   {
     "_id": "u2",
+    "username": "bob",
+    "password": "bob123",
     "firstName": "Bob",
     "lastName": "Smith",
+    "email": "bob@example.com",
     "loginId": "bob",
     "section": "001",
     "role": "TA",
@@ -21,12 +27,28 @@
   },
   {
     "_id": "u3",
+    "username": "carol",
+    "password": "carol123",
     "firstName": "Carol",
     "lastName": "Lee",
+    "email": "carol@example.com",
     "loginId": "carol",
     "section": "002",
     "role": "Student",
     "lastActivity": "2025-10-02",
     "totalActivity": 10
+  },
+  {
+    "_id": "u4",
+    "username": "faculty",
+    "password": "faculty123",
+    "firstName": "John",
+    "lastName": "Professor",
+    "email": "faculty@example.com",
+    "loginId": "faculty",
+    "section": "001",
+    "role": "FACULTY",
+    "lastActivity": "2025-11-22",
+    "totalActivity": 500
   }
 ]

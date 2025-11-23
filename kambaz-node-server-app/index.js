@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import session from "express-session";
+import mongoose from "mongoose";
 
 import db from "./Kambaz/Database/index.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
@@ -45,11 +46,11 @@ app.use(express.json());
 // NOTE: debug route removed - use /api/users/profile for session checks
 
 // register routes (after cors, session, json)
-UserRoutes(app, db);
-CourseRoutes(app, db);
-ModulesRoutes(app, db);
-EnrollmentsRoutes(app, db);
-AssignmentRoutes(app, db);
+UserRoutes(app);
+CourseRoutes(app);
+ModulesRoutes(app);
+EnrollmentsRoutes(app);
+AssignmentRoutes(app);
 
 // Dynamic import to avoid potential ESM resolution issues on some filesystems
 try {
@@ -63,6 +64,25 @@ try {
 } catch (err) {
   console.error("Failed to import Lab5 module:", err);
 }
+
+const CONNECTION_STRING =
+  process.env.DATABASE_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
+
+// Connect to MongoDB first, then start the server
+try {
+  await mongoose.connect(CONNECTION_STRING, {
+    // useNewUrlParser and useUnifiedTopology are defaults in mongoose v6+
+  });
+  console.log("Connected to MongoDB");
+} catch (err) {
+  console.error("Failed to connect to MongoDB:", err);
+  // continue starting the server even if DB connection fails locally;
+  // many routes still may work against the in-memory/file DB fallback.
+}
+
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB connection error:", err);
+});
 
 const PORT = process.env.PORT || 4000;
 

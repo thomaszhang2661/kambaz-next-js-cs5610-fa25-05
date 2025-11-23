@@ -41,10 +41,32 @@ export default function Dashboard() {
     description: "New Description",
   });
 
+  const [showAllCourses, setShowAllCourses] = useState(false);
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<Set<string>>(
+    new Set()
+  );
+
   const fetchCourses = async () => {
     try {
-      const data = await client.findMyCourses();
-      dispatch(setCourses(data));
+      if (showAllCourses) {
+        const allCourses = await client.fetchAllCourses();
+        dispatch(setCourses(allCourses));
+      } else {
+        const myCourses = await client.findMyCourses();
+        dispatch(setCourses(myCourses));
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchEnrolledCourses = async () => {
+    try {
+      const myCourses = await client.findMyCourses();
+      const ids = new Set<string>(
+        myCourses.map((c: Course) => (c._id || c.id) as string)
+      );
+      setEnrolledCourseIds(ids);
     } catch (err) {
       console.error(err);
     }
@@ -52,7 +74,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchCourses();
-  }, [currentUser]);
+    if (showAllCourses) {
+      fetchEnrolledCourses();
+    }
+  }, [currentUser, showAllCourses]);
 
   const handleAddNew = async () => {
     try {
@@ -80,40 +105,88 @@ export default function Dashboard() {
     }
   };
 
+  const handleEnroll = async (courseId: string) => {
+    try {
+      await client.enrollInCourse(courseId);
+      setEnrolledCourseIds(new Set([...enrolledCourseIds, courseId]));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUnenroll = async (courseId: string) => {
+    try {
+      await client.unenrollFromCourse(courseId);
+      const newSet = new Set(enrolledCourseIds);
+      newSet.delete(courseId);
+      setEnrolledCourseIds(newSet);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
-      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
-      <h5 className="mt-3">
-        New Course
-        <Button
-          className="btn btn-primary float-end ms-2"
-          id="wd-add-new-course-click"
-          onClick={handleAddNew}
-        >
-          Add
-        </Button>
-        <Button
-          className="btn btn-warning float-end"
-          id="wd-update-course-click"
-          onClick={handleUpdate}
-        >
-          Update
-        </Button>
-      </h5>
-      <FormControl
-        value={course.name}
-        className="mb-2 mt-2"
-        onChange={(e) => setCourse({ ...course, name: e.target.value })}
-      />
-      <FormControl
-        value={course.description}
-        rows={3}
-        className="mb-3"
-        as="textarea"
-        onChange={(e) => setCourse({ ...course, description: e.target.value })}
-      />
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2 id="wd-dashboard-published">
+          {showAllCourses ? "All Courses" : "Published Courses"} (
+          {courses.length})
+        </h2>
+        <div>
+          <Button
+            variant={showAllCourses ? "secondary" : "primary"}
+            className="me-2"
+            onClick={() => setShowAllCourses(false)}
+          >
+            My Courses
+          </Button>
+          <Button
+            variant={showAllCourses ? "primary" : "secondary"}
+            onClick={() => setShowAllCourses(true)}
+          >
+            All Courses
+          </Button>
+        </div>
+      </div>
+      {currentUser?.role === "FACULTY" && (
+        <h5 className="mt-3">
+          New Course
+          <Button
+            className="btn btn-primary float-end ms-2"
+            id="wd-add-new-course-click"
+            onClick={handleAddNew}
+          >
+            Add
+          </Button>
+          <Button
+            className="btn btn-warning float-end"
+            id="wd-update-course-click"
+            onClick={handleUpdate}
+          >
+            Update
+          </Button>
+        </h5>
+      )}
+      {currentUser?.role === "FACULTY" && (
+        <>
+          <FormControl
+            value={course.name}
+            className="mb-2 mt-2"
+            onChange={(e) => setCourse({ ...course, name: e.target.value })}
+          />
+          <FormControl
+            value={course.description}
+            rows={3}
+            className="mb-3"
+            as="textarea"
+            onChange={(e) =>
+              setCourse({ ...course, description: e.target.value })
+            }
+          />
+        </>
+      )}
       <div id="wd-dashboard-courses" className="mt-4">
         <div className="row g-4">
           {courses.map((course: Course) => {
@@ -156,27 +229,58 @@ export default function Dashboard() {
                         Go
                       </Link>
                       <div>
-                        <Button
-                          variant="warning"
-                          className="me-2"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setCourse(course);
-                          }}
-                          id="wd-edit-course-click"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="danger"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleDelete(id);
-                          }}
-                          id="wd-delete-course-click"
-                        >
-                          Delete
-                        </Button>
+                        {showAllCourses && (
+                          <>
+                            {enrolledCourseIds.has(id || "") ? (
+                              <Button
+                                variant="danger"
+                                className="me-2"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleUnenroll(id || "");
+                                }}
+                              >
+                                Unenroll
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="success"
+                                className="me-2"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleEnroll(id || "");
+                                }}
+                              >
+                                Enroll
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {currentUser?.role === "FACULTY" && !showAllCourses && (
+                          <>
+                            <Button
+                              variant="warning"
+                              className="me-2"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setCourse(course);
+                              }}
+                              id="wd-edit-course-click"
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              variant="danger"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDelete(id);
+                              }}
+                              id="wd-delete-course-click"
+                            >
+                              Delete
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
