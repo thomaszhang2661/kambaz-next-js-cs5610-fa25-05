@@ -33,7 +33,7 @@ export default function Dashboard() {
     number: "New Number",
     startDate: "2023-09-10",
     endDate: "2023-12-15",
-    image: "/images/reactjs.jpg",
+    image: "/images/reactjs.webp",
     description: "New Description",
   });
 
@@ -47,12 +47,32 @@ export default function Dashboard() {
   const handleUpdate = () => {
     dispatch(updateCourse(course));
   };
+  const handleEdit = (courseToEdit: Course) => {
+    console.log("handleEdit called with:", courseToEdit);
+    setCourse(courseToEdit);
+    // Scroll to top to show the form
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      console.log("After setState, current course:", courseToEdit);
+    }, 100);
+  };
 
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
+      {/* Debug: Show current course state */}
+      <div
+        style={{
+          background: "#f0f0f0",
+          padding: "10px",
+          marginBottom: "10px",
+          fontSize: "12px",
+        }}
+      >
+        Debug: Editing course: {course.name} (ID: {course._id})
+      </div>
       <h5 className="mt-3">
         New Course
         <Button
@@ -84,11 +104,12 @@ export default function Dashboard() {
       />
       <div id="wd-dashboard-courses" className="mt-4">
         <div className="row g-4">
-          {courses.map((course: Course) => {
-            const id = course._id || course.id;
-            const title = course.name || course.title;
-            const description = course.description || course.description;
-            const image = course.image || "/images/reactjs.webp";
+          {courses.map((courseItem: Course) => {
+            const id = courseItem._id || courseItem.id;
+            const title = courseItem.name || courseItem.title;
+            const description =
+              courseItem.description || courseItem.description;
+            const image = courseItem.image || "/images/reactjs.webp";
             return (
               <div
                 key={id}
@@ -127,9 +148,12 @@ export default function Dashboard() {
                         <Button
                           variant="warning"
                           className="me-2"
+                          type="button"
                           onClick={(e) => {
                             e.preventDefault();
-                            setCourse(course);
+                            e.stopPropagation();
+                            console.log("Edit clicked for course:", courseItem);
+                            handleEdit(courseItem);
                           }}
                           id="wd-edit-course-click"
                         >
@@ -137,8 +161,10 @@ export default function Dashboard() {
                         </Button>
                         <Button
                           variant="danger"
+                          type="button"
                           onClick={(e) => {
                             e.preventDefault();
+                            e.stopPropagation();
                             handleDelete(id);
                           }}
                           id="wd-delete-course-click"

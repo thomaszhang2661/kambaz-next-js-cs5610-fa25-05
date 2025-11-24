@@ -3,6 +3,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 import CounterRedux from "./CounterRedux";
 import TodoListRedux from "./TodoListRedux";
+import AddRedux from "./AddRedux";
 
 export default function ReduxExamples() {
   return (
@@ -11,6 +12,7 @@ export default function ReduxExamples() {
         <h2>Redux Examples</h2>
         <p>These examples demonstrate simple Redux wiring for the chapter.</p>
         <CounterRedux />
+        <AddRedux />
         <TodoListRedux />
         <hr />
       </div>

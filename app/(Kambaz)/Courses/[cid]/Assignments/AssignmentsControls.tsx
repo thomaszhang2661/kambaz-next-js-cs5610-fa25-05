@@ -1,8 +1,19 @@
+"use client";
+
 import { Button, Form, InputGroup } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { FaPlus, FaSearch } from "react-icons/fa";
+import { useParams, useRouter } from "next/navigation";
 
 export default function AssignmentsControls() {
+  const { cid } = useParams();
+  const router = useRouter();
+
+  const handleAddAssignment = () => {
+    // Navigate to editor page with 'new' as the assignment ID
+    router.push(`/Courses/${cid}/Assignments/new`);
+  };
+
   return (
     <div id="wd-assignments-controls" className="text-nowrap mb-4">
       <div className="d-flex justify-content-between align-items-center">
@@ -34,7 +45,12 @@ export default function AssignmentsControls() {
             />
             Group
           </Button>
-          <Button variant="danger" size="lg" id="wd-add-assignment-btn">
+          <Button
+            variant="danger"
+            size="lg"
+            id="wd-add-assignment-btn"
+            onClick={handleAddAssignment}
+          >
             <FaPlus
               className="position-relative me-2"
               style={{ bottom: "1px" }}

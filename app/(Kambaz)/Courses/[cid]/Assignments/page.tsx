@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
-import { BsGripVertical } from "react-icons/bs";
+import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import { BsGripVertical, BsTrash, BsPencil } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
 import AssignmentsControls from "./AssignmentsControls";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "../../../Assignments/reducer";
 import * as db from "../../../Database";
 
 type Assignment = {
@@ -18,13 +20,35 @@ type Assignment = {
   availableDate?: string;
 };
 
+type RootState = { assignmentsReducer: { assignments: Assignment[] } };
+
 export default function Assignments() {
   const params = useParams() as { cid?: string };
   const cid = params?.cid || "";
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const assignments: Assignment[] = (db.assignments || []).filter(
+  const { assignments } = useSelector(
+    (state: RootState) =>
+      state.assignmentsReducer || {
+        assignments: (db.assignments || []) as Assignment[],
+      }
+  );
+
+  const filteredAssignments = assignments.filter(
     (a: Assignment) => a.course === cid
   );
+
+  const handleDelete = (assignmentId: string, title: string) => {
+    if (confirm(`Delete assignment "${title}"?`)) {
+      dispatch(deleteAssignment(assignmentId));
+    }
+  };
+
+  const handleEdit = (assignmentId: string) => {
+    // Navigate to the assignment editor page
+    router.push(`/Courses/${cid}/Assignments/${assignmentId}`);
+  };
 
   return (
     <div id="wd-assignments">
@@ -44,7 +68,7 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="wd-assignment-items rounded-0">
-            {assignments.map((a) => (
+            {filteredAssignments.map((a) => (
               <ListGroupItem
                 key={a._id}
                 className="wd-assignment-list-item p-3 ps-1 d-flex justify-content-between align-items-center"
@@ -71,6 +95,28 @@ export default function Assignments() {
                   </div>
                 </div>
                 <div className="float-end">
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="text-primary me-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleEdit(a._id);
+                    }}
+                  >
+                    <BsPencil />
+                  </Button>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    className="text-danger me-2"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleDelete(a._id, a.title);
+                    }}
+                  >
+                    <BsTrash />
+                  </Button>
                   <button className="btn btn-sm">⋮</button>
                 </div>
               </ListGroupItem>

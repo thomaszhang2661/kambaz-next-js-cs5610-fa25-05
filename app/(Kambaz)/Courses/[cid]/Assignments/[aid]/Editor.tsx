@@ -2,7 +2,12 @@
 
 import { Form, Row, Col, Button, Card } from "react-bootstrap";
 import { useParams, useRouter } from "next/navigation";
-import * as db from "../../../../Database";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  addNewAssignment,
+  updateAssignment,
+} from "../../../../Assignments/reducer";
+import { useState, useEffect } from "react";
 
 type Assignment = {
   _id: string;
@@ -14,18 +19,58 @@ type Assignment = {
   availableDate?: string;
 };
 
+type RootState = {
+  assignmentsReducer: { assignments: Assignment[] };
+};
+
 export default function Editor() {
   const params = useParams() as { cid?: string; aid?: string };
   const cid = params.cid || "";
   const aid = params.aid || "";
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const assignment: Assignment =
-    (db.assignments || []).find(
-      (a: Assignment) => a._id === aid && a.course === cid
-    ) || ({} as Assignment);
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer || { assignments: [] }
+  );
+
+  const existingAssignment = assignments.find(
+    (a: Assignment) => a._id === aid && a.course === cid
+  );
+
+  const [assignment, setAssignment] = useState<Assignment>({
+    _id: aid,
+    course: cid,
+    title: "",
+    description: "",
+    points: 100,
+    dueDate: "",
+    availableDate: "",
+  });
+
+  useEffect(() => {
+    if (existingAssignment) {
+      setAssignment(existingAssignment);
+    }
+  }, [existingAssignment]);
 
   function onCancel() {
+    router.push(`/Courses/${cid}/Assignments`);
+  }
+
+  function onSave() {
+    if (aid === "new") {
+      // Creating new assignment
+      dispatch(
+        addNewAssignment({
+          ...assignment,
+          _id: new Date().getTime().toString(),
+        })
+      );
+    } else {
+      // Updating existing assignment
+      dispatch(updateAssignment(assignment));
+    }
     router.push(`/Courses/${cid}/Assignments`);
   }
 
@@ -34,7 +79,12 @@ export default function Editor() {
       <Form>
         <Form.Group className="mb-3" controlId="wd-name">
           <Form.Label>Assignment Name</Form.Label>
-          <Form.Control defaultValue={(assignment && assignment.title) || ""} />
+          <Form.Control
+            value={assignment.title || ""}
+            onChange={(e) =>
+              setAssignment({ ...assignment, title: e.target.value })
+            }
+          />
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="wd-description">
@@ -42,7 +92,10 @@ export default function Editor() {
           <Form.Control
             as="textarea"
             rows={5}
-            defaultValue={(assignment && assignment.description) || ""}
+            value={assignment.description || ""}
+            onChange={(e) =>
+              setAssignment({ ...assignment, description: e.target.value })
+            }
           />
         </Form.Group>
 
@@ -53,7 +106,14 @@ export default function Editor() {
           <Col md={4}>
             <Form.Group controlId="wd-points" className="mb-3">
               <Form.Control
-                defaultValue={(assignment && assignment.points) || 100}
+                type="number"
+                value={assignment.points || 100}
+                onChange={(e) =>
+                  setAssignment({
+                    ...assignment,
+                    points: parseInt(e.target.value),
+                  })
+                }
               />
             </Form.Group>
           </Col>
@@ -80,7 +140,10 @@ export default function Editor() {
                   <Form.Label>Due</Form.Label>
                   <Form.Control
                     type="date"
-                    defaultValue={(assignment && assignment.dueDate) || ""}
+                    value={assignment.dueDate || ""}
+                    onChange={(e) =>
+                      setAssignment({ ...assignment, dueDate: e.target.value })
+                    }
                   />
                 </Form.Group>
                 <Row className="mb-3">
@@ -89,8 +152,12 @@ export default function Editor() {
                       <Form.Label>Available from</Form.Label>
                       <Form.Control
                         type="date"
-                        defaultValue={
-                          (assignment && assignment.availableDate) || ""
+                        value={assignment.availableDate || ""}
+                        onChange={(e) =>
+                          setAssignment({
+                            ...assignment,
+                            availableDate: e.target.value,
+                          })
                         }
                       />
                     </Form.Group>
@@ -110,13 +177,7 @@ export default function Editor() {
         <Button variant="secondary" className="me-2" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          variant="danger"
-          onClick={() => {
-            // minimal save behaviour: navigate back to assignments list
-            router.push(`/Courses/${cid}/Assignments`);
-          }}
-        >
+        <Button variant="danger" onClick={onSave}>
           Save
         </Button>
       </Form>

@@ -7,8 +7,25 @@ import {
 } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
+import { useParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addNewModule } from "../../../Modules/reducer";
 
 export default function ModulesControls() {
+  const params = useParams();
+  const cid = Array.isArray(params?.cid) ? params?.cid[0] : params?.cid;
+  const dispatch = useDispatch();
+
+  const handleAddModule = () => {
+    const newModule = {
+      _id: new Date().getTime().toString(),
+      course: cid,
+      name: "New Module",
+      lessons: [],
+    };
+    dispatch(addNewModule(newModule));
+  };
+
   return (
     <div id="wd-modules-controls" className="text-nowrap">
       <Button
@@ -16,6 +33,7 @@ export default function ModulesControls() {
         size="lg"
         className="me-1 float-end"
         id="wd-add-module-btn"
+        onClick={handleAddModule}
       >
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
         Module
