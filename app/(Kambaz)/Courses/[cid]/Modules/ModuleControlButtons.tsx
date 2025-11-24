@@ -55,8 +55,8 @@ export default function ModuleControlButtons({
   };
 
   const handleShowMenu = () => {
-    console.log("Show menu for module:", moduleId);
-    alert("Module menu functionality can be implemented here");
+    // Module menu functionality can be implemented here
+    // For now, this is a placeholder
   };
 
   return (

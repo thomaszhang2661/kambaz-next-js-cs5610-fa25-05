@@ -48,12 +48,10 @@ export default function Dashboard() {
     dispatch(updateCourse(course));
   };
   const handleEdit = (courseToEdit: Course) => {
-    console.log("handleEdit called with:", courseToEdit);
     setCourse(courseToEdit);
     // Scroll to top to show the form
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
-      console.log("After setState, current course:", courseToEdit);
     }, 100);
   };
 
@@ -62,17 +60,6 @@ export default function Dashboard() {
       <h1 id="wd-dashboard-title">Dashboard</h1>
       <hr />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
-      {/* Debug: Show current course state */}
-      <div
-        style={{
-          background: "#f0f0f0",
-          padding: "10px",
-          marginBottom: "10px",
-          fontSize: "12px",
-        }}
-      >
-        Debug: Editing course: {course.name} (ID: {course._id})
-      </div>
       <h5 className="mt-3">
         New Course
         <Button
@@ -152,7 +139,6 @@ export default function Dashboard() {
                           onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log("Edit clicked for course:", courseItem);
                             handleEdit(courseItem);
                           }}
                           id="wd-edit-course-click"
