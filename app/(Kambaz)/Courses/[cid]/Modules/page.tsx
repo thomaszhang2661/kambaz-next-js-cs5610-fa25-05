@@ -53,7 +53,23 @@ export default function Modules() {
           >
             <div className="wd-title p-3 ps-2 bg-secondary">
               <BsGripVertical className="me-2 fs-3" /> {mod.name}
-              <ModuleControlButtons />
+              <ModuleControlButtons
+                moduleId={mod._id}
+                moduleName={mod.name}
+                courseId={cid || ""}
+                onEdit={() => {
+                  // Module edit functionality - implement API call here
+                  console.log("Edit module:", mod._id);
+                }}
+                onDelete={() => {
+                  // Module delete functionality - implement API call here
+                  console.log("Delete module:", mod._id);
+                }}
+                onAddLesson={() => {
+                  // Add lesson functionality - implement API call here
+                  console.log("Add lesson to module:", mod._id);
+                }}
+              />
             </div>
             <ListGroup className="wd-lessons rounded-0">
               {(mod.lessons || []).map((lesson) => (
