@@ -37,7 +37,7 @@ export default function Dashboard() {
     number: "New Number",
     startDate: "2023-09-10",
     endDate: "2023-12-15",
-    image: "/images/reactjs.jpg",
+    image: "/images/reactjs.webp",
     description: "New Description",
   });
 
@@ -189,11 +189,12 @@ export default function Dashboard() {
       )}
       <div id="wd-dashboard-courses" className="mt-4">
         <div className="row g-4">
-          {courses.map((course: Course) => {
-            const id = course._id || course.id;
-            const title = course.name || course.title;
-            const description = course.description || course.description;
-            const image = course.image || "/images/reactjs.webp";
+          {courses.map((courseItem: Course) => {
+            const id = courseItem._id || courseItem.id;
+            const title = courseItem.name || courseItem.title;
+            const description =
+              courseItem.description || courseItem.description;
+            const image = courseItem.image || "/images/reactjs.webp";
             return (
               <div
                 key={id}
@@ -261,9 +262,17 @@ export default function Dashboard() {
                             <Button
                               variant="warning"
                               className="me-2"
+                              type="button"
                               onClick={(e) => {
                                 e.preventDefault();
-                                setCourse(course);
+                                e.stopPropagation();
+                                setCourse(courseItem);
+                                setTimeout(() => {
+                                  window.scrollTo({
+                                    top: 0,
+                                    behavior: "smooth",
+                                  });
+                                }, 100);
                               }}
                               id="wd-edit-course-click"
                             >
