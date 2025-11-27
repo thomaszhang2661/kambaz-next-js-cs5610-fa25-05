@@ -13,9 +13,9 @@ type ModuleControlButtonsProps = {
 };
 
 export default function ModuleControlButtons({
-  moduleId,
+  moduleId, // eslint-disable-line @typescript-eslint/no-unused-vars
   moduleName,
-  courseId,
+  courseId, // eslint-disable-line @typescript-eslint/no-unused-vars
   onEdit,
   onDelete,
   onAddLesson,
