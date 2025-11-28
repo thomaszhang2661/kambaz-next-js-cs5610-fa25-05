@@ -66,6 +66,7 @@
      mongodb+srv://kambaz_user:Kambaz2024!@kambaz.xxxxx.mongodb.net/kambaz?retryWrites=true&w=majority
      ```
 
+```mongodb+srv://kambaz_user:Kambaz2024@kambaz.57jc9bv.mongodb.net/?appName=Kambaz```
 ### 1.6 导入数据到 Atlas
 
 1. 下载并打开 MongoDB Compass
@@ -92,7 +93,7 @@
    git add .
    git commit -m "Initial commit for deployment"
    git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/kambaz-node-server-app.git
+   git remote add origin https://github.com/thomaszhang2661/kambaz-node-server-app.git
    git push -u origin main
    ```
 
@@ -148,9 +149,9 @@
 
 部署完成后，测试以下 URL：
 
-- `https://kambaz-node-server-app-a6.onrender.com/` - 应该返回欢迎消息
-- `https://kambaz-node-server-app-a6.onrender.com/api/courses` - 应该返回课程列表
-- `https://kambaz-node-server-app-a6.onrender.com/api/users` - 应该返回用户列表
+- `https://kambaz-node-server-app.onrender.com/` - 应该返回欢迎消息
+- `https://kambaz-node-server-app.onrender.com/api/courses` - 应该返回课程列表
+- `https://kambaz-node-server-app.onrender.com/api/users` - 应该返回用户列表
 
 ⚠️ **注意**：Render 免费版会在 15 分钟无活动后休眠，首次访问可能需要 30-60 秒唤醒。
 
