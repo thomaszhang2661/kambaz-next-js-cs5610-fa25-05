@@ -3,7 +3,7 @@
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid } from "react-icons/lia";
-import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
+import { FaInbox, FaRegCircleUser, FaUsers } from "react-icons/fa6";
 import { MdOutlineScience } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,6 +16,7 @@ export default function KambazNavigation() {
   const links: { label: string; path: string; Icon: ElementType }[] = [
     { label: "Dashboard", path: "/Dashboard", Icon: AiOutlineDashboard },
     { label: "Courses", path: "/Courses", Icon: LiaBookSolid },
+    { label: "Users", path: "/Users", Icon: FaUsers },
     { label: "Calendar", path: "/Calendar", Icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", Icon: FaInbox },
     { label: "Labs", path: "/Labs", Icon: MdOutlineScience },

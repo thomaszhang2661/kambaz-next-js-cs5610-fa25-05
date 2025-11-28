@@ -8,7 +8,11 @@ import {
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 
-export default function ModulesControls() {
+type ModulesControlsProps = {
+  onAddModule?: () => void;
+};
+
+export default function ModulesControls({ onAddModule }: ModulesControlsProps) {
   return (
     <div id="wd-modules-controls" className="text-nowrap">
       <Button
@@ -16,6 +20,7 @@ export default function ModulesControls() {
         size="lg"
         className="me-1 float-end"
         id="wd-add-module-btn"
+        onClick={onAddModule}
       >
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
         Module

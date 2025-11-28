@@ -7,7 +7,7 @@ type ModuleControlButtonsProps = {
   moduleId: string;
   moduleName: string;
   courseId: string;
-  onEdit?: () => void;
+  onEdit?: (newName: string) => void;
   onDelete?: () => void;
   onAddLesson?: () => void;
 };
@@ -23,7 +23,7 @@ export default function ModuleControlButtons({
   const handleEdit = () => {
     const newName = prompt("Enter new module name:", moduleName);
     if (newName && newName.trim() && onEdit) {
-      onEdit();
+      onEdit(newName);
     }
   };
 

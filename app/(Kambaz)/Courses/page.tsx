@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ListGroup, ListGroupItem, Card } from "react-bootstrap";
 import Image from "next/image";
 
 type Course = {
@@ -36,18 +35,16 @@ export default async function CoursesIndex() {
   return (
     <div className="p-4">
       <h2 className="mb-4">Select a Course</h2>
-      <ListGroup>
+      <div className="list-group">
         {courses.map((course) => (
-          <ListGroupItem
+          <Link
             key={course._id || course.id}
-            action
-            as={Link}
             href={`/Courses/${course._id || course.id}/Home`}
-            className="mb-3 p-0"
+            className="list-group-item list-group-item-action mb-3 p-0"
             style={{ cursor: "pointer", textDecoration: "none" }}
           >
-            <Card className="border-0">
-              <Card.Body className="d-flex align-items-center">
+            <div className="card border-0">
+              <div className="card-body d-flex align-items-center">
                 <div
                   className="me-3"
                   style={{
@@ -93,11 +90,11 @@ export default async function CoursesIndex() {
                     />
                   </svg>
                 </div>
-              </Card.Body>
-            </Card>
-          </ListGroupItem>
+              </div>
+            </div>
+          </Link>
         ))}
-      </ListGroup>
+      </div>
     </div>
   );
 }
