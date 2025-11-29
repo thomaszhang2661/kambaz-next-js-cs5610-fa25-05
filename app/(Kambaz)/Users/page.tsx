@@ -67,22 +67,30 @@ export default function UsersPage() {
   };
 
   const handleCreateUser = async () => {
+    console.log("🔵 Add User button clicked!");
+
+    const timestamp = Date.now();
     const newUser = {
-      username: "newuser",
+      username: `newuser${timestamp}`,
       password: "password123",
       firstName: "New",
       lastName: "User",
-      email: "newuser@example.com",
+      email: `newuser${timestamp}@example.com`,
       role: "STUDENT" as const,
     };
 
+    console.log("🔵 Creating user:", newUser);
+
     try {
       const created = await client.createUser(newUser);
+      console.log("✅ User created successfully:", created);
       setUsers([...users, created]);
       setSelectedUser(created);
       setIsEditing(true);
-    } catch (error) {
-      console.error("Error creating user:", error);
+      alert(`User created successfully: ${created.username}`);
+    } catch (error: any) {
+      console.error("❌ Error creating user:", error);
+      alert(`Failed to create user: ${error.message || error}`);
     }
   };
 
