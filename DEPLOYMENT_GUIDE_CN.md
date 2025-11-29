@@ -66,7 +66,8 @@
      mongodb+srv://kambaz_user:Kambaz2024!@kambaz.xxxxx.mongodb.net/kambaz?retryWrites=true&w=majority
      ```
 
-```mongodb+srv://kambaz_user:Kambaz2024@kambaz.57jc9bv.mongodb.net/?appName=Kambaz```
+`mongodb+srv://kambaz_user:Kambaz2024@kambaz.57jc9bv.mongodb.net/?appName=Kambaz`
+
 ### 1.6 导入数据到 Atlas
 
 1. 下载并打开 MongoDB Compass
@@ -123,17 +124,18 @@
 
 在 "Environment Variables" 部分，点击 "Add Environment Variable" 添加以下变量：
 
-| Key                          | Value                                                                                               | 说明                               |
-| ---------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `SERVER_ENV`                 | `production`                                                                                        | 生产环境标识                       |
-| `CLIENT_URL`                 | `https://your-app.vercel.app`                                                                       | 您的 Vercel 前端 URL               |
-| `SERVER_URL`                 | `kambaz-node-server-app-a6.onrender.com`                                                            | Render 分配的域名（不含 https://） |
-| `SESSION_SECRET`             | `your-super-secret-key-12345`                                                                       | 会话密钥（随机生成）               |
-| `DATABASE_CONNECTION_STRING` | `mongodb+srv://kambaz_user:Kambaz2024!@kambaz.xxxxx.mongodb.net/kambaz?retryWrites=true&w=majority` | 从 MongoDB Atlas 获取的连接字符串  |
+| Key                          | Value                                                                                               | 说明                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `SERVER_ENV`                 | `production`                                                                                        | 生产环境标识                                 |
+| `CLIENT_URL`                 | `https://your-app.vercel.app`                                                                       | 您的 Vercel 前端 URL（支持多个，用逗号分隔） |
+| `SERVER_URL`                 | `kambaz-node-server-app-a6.onrender.com`                                                            | Render 分配的域名（不含 https://）           |
+| `SESSION_SECRET`             | `your-super-secret-key-12345`                                                                       | 会话密钥（随机生成）                         |
+| `DATABASE_CONNECTION_STRING` | `mongodb+srv://kambaz_user:Kambaz2024!@kambaz.xxxxx.mongodb.net/kambaz?retryWrites=true&w=majority` | 从 MongoDB Atlas 获取的连接字符串            |
 
 ⚠️ **重要提示**：
 
 - `CLIENT_URL` 必须是完整的 HTTPS URL
+- **支持多个域名**：使用逗号分隔，例如：`https://app1.vercel.app,https://app2.vercel.app,http://localhost:3001`
 - `SERVER_URL` 不要包含 `https://`，只要域名
 - `DATABASE_CONNECTION_STRING` 确保包含数据库名 `kambaz`
 

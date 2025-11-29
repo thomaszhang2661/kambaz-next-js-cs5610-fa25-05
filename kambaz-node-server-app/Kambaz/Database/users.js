@@ -6,7 +6,7 @@ export default [
     username: "alice",
     password: "alice123",
     email: "alice@example.com",
-    role: "USER",
+    role: "STUDENT",
   },
   {
     _id: "u2",
@@ -15,7 +15,7 @@ export default [
     username: "bob",
     password: "bob123",
     email: "bob@example.com",
-    role: "ADMIN",
+    role: "TA",
   },
   {
     _id: "u3",
@@ -24,7 +24,7 @@ export default [
     username: "carol",
     password: "carol123",
     email: "carol@example.com",
-    role: "USER",
+    role: "STUDENT",
   },
   {
     _id: "u4",
