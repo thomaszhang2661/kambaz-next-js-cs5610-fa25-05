@@ -16,7 +16,7 @@ export default function Signup() {
     try {
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
-      router.push("/Profile");
+      router.push("/Account/Profile");
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || "Unable to sign up");
