@@ -12,6 +12,8 @@ export default function WorkingWithObjects() {
     score: 0,
   });
   const [fetched, setFetched] = useState<any>(null);
+  const [module, setModule] = useState<any>(null);
+  const [moduleName, setModuleName] = useState<string>("");
 
   const fetchAssignment = async () => {
     const a = await client.fetchAssignment();
@@ -25,6 +27,16 @@ export default function WorkingWithObjects() {
   const updateTitle = async () => {
     const updated = await client.updateTitle(assignment.title);
     setFetched(updated);
+  };
+
+  const fetchModule = async () => {
+    const m = await client.fetchModule();
+    setModule(m);
+  };
+
+  const fetchModuleName = async () => {
+    const name = await client.fetchModuleName();
+    setModuleName(name);
   };
 
   return (
@@ -72,6 +84,30 @@ export default function WorkingWithObjects() {
           setAssignment({ ...assignment, title: e.target.value })
         }
       />
+      <hr />
+      <h4>Retrieving Module Object</h4>
+      <button
+        id="wd-retrieve-module"
+        className="btn btn-primary"
+        onClick={fetchModule}
+      >
+        Get Module
+      </button>
+      {module && <pre className="mt-2">{JSON.stringify(module, null, 2)}</pre>}
+      <hr />
+      <h4>Retrieving Module Name</h4>
+      <button
+        id="wd-retrieve-module-name"
+        className="btn btn-primary"
+        onClick={fetchModuleName}
+      >
+        Get Module Name
+      </button>
+      {moduleName && (
+        <div className="mt-2">
+          Module Name: <strong>{moduleName}</strong>
+        </div>
+      )}
       <hr />
     </div>
   );

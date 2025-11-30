@@ -36,6 +36,14 @@ export const fetchTodos = async () => {
   const { data } = await axios.get(`${API}/todos`);
   return data;
 };
+export const fetchModule = async () => {
+  const { data } = await axios.get(`${API}/module`);
+  return data;
+};
+export const fetchModuleName = async () => {
+  const { data } = await axios.get(`${API}/module/name`);
+  return data;
+};
 export const addPath = async (a: number | string, b: number | string) => {
   const { data } = await axios.get(`${API}/add/${a}/${b}`);
   return data;
