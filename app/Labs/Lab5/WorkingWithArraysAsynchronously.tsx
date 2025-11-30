@@ -81,9 +81,9 @@ export default function WorkingWithArraysAsynchronously() {
           id="wd-post-todo"
         />
       </h4>
-      <ul>
+      <ul className="list-group">
         {todos.map((todo) => (
-          <li key={todo.id}>
+          <li key={todo.id} className="list-group-item">
             <FaTrash
               onClick={() => removeTodo(todo)}
               className="text-danger float-end mt-1"
@@ -100,7 +100,8 @@ export default function WorkingWithArraysAsynchronously() {
             />
             <input
               type="checkbox"
-              defaultChecked={todo.completed}
+              className="form-check-input me-2"
+              checked={todo.completed}
               onChange={(e) =>
                 updateTodo({ ...todo, completed: e.target.checked })
               }
@@ -115,8 +116,8 @@ export default function WorkingWithArraysAsynchronously() {
               </span>
             ) : (
               <input
-                className="w-50"
-                defaultValue={todo.title}
+                className="form-control w-50 d-inline-block"
+                value={todo.title}
                 onKeyDown={(e) => {
                   if (e.key === "Enter")
                     updateTodo({ ...todo, editing: false });
