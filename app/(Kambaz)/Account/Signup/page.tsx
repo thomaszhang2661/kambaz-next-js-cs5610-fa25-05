@@ -5,17 +5,18 @@ import { FormControl } from "react-bootstrap";
 import * as client from "../client";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [user, setUser] = useState<any>({});
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const signup = async () => {
     try {
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
-      redirect("/Profile");
+      router.push("/Profile");
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || "Unable to sign up");

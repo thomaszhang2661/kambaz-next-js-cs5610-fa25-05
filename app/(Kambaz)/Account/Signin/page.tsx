@@ -5,18 +5,19 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import * as client from "../client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Signin() {
   const [credentials, setCredentials] = useState<any>({});
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const signin = async () => {
     try {
       const user = await client.signin(credentials);
       if (!user) return;
       dispatch(setCurrentUser(user));
-      redirect("/Dashboard");
+      router.push("/Dashboard");
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || "Unable to sign in");
