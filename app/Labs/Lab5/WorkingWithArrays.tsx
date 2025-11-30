@@ -5,8 +5,8 @@ import type { Todo } from "./client";
 
 export default function WorkingWithArrays() {
   const [todo, setTodo] = useState<Todo>({
-    id: "1",
-    title: "Task 1",
+    id: "2",
+    title: "Task 2",
     description: "",
     completed: false,
   });
