@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 import { setCurrentUser } from "../reducer";
 import * as client from "../client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function Profile() {
@@ -12,6 +12,7 @@ export default function Profile() {
     (state: RootState) => (state as any).accountReducer
   );
   const dispatch = useDispatch();
+  const router = useRouter();
   const [profile, setProfile] = useState<any>({});
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function Profile() {
       // ignore
     }
     dispatch(setCurrentUser(null));
-    redirect("/Account/Signin");
+    router.push("/Account/Signin");
   };
 
   return (
