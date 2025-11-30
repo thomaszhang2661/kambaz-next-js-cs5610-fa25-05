@@ -15,8 +15,9 @@ export default function WorkingWithObjectsAsynchronously() {
   useEffect(() => {
     fetchAssignment();
   }, []);
-  const updateTitle = async (title: string) => {
-    const updated = await client.updateTitle(title);
+  const updateTitle = async () => {
+    if (!assignment) return;
+    const updated = await client.updateTitle(assignment.title);
     setAssignment(updated);
   };
   return (
@@ -24,34 +25,35 @@ export default function WorkingWithObjectsAsynchronously() {
       <h3>Working with Objects Asynchronously</h3>
       <h4>Assignment</h4>
       <input
-        defaultValue={assignment?.title}
+        value={assignment?.title || ""}
         onChange={(e) =>
           assignment && setAssignment({ ...assignment, title: e.target.value })
         }
-        className="mb-2"
+        className="form-control mb-2"
       />
-      <input
-        defaultValue={assignment?.description}
+      <textarea
+        rows={3}
+        value={assignment?.description || ""}
         onChange={(e) =>
           assignment &&
           setAssignment({ ...assignment, description: e.target.value })
         }
-        className="mb-2"
+        className="form-control mb-2"
       />
       <input
         type="date"
-        defaultValue={assignment?.due}
+        value={assignment?.due || ""}
         onChange={(e) =>
           assignment && setAssignment({ ...assignment, due: e.target.value })
         }
-        className="mb-2"
+        className="form-control mb-2"
       />
       <div className="form-check form-switch">
         <input
           className="form-check-input"
           type="checkbox"
           id="wd-completed"
-          defaultChecked={!!assignment?.completed}
+          checked={!!assignment?.completed}
           onChange={(e) =>
             assignment &&
             setAssignment({ ...assignment, completed: e.target.checked })
@@ -62,10 +64,7 @@ export default function WorkingWithObjectsAsynchronously() {
           Completed{" "}
         </label>
       </div>
-      <button
-        className="btn btn-primary me-2"
-        onClick={() => assignment && updateTitle(assignment.title)}
-      >
+      <button className="btn btn-primary me-2" onClick={updateTitle}>
         Update Title
       </button>
       <pre>{JSON.stringify(assignment, null, 2)}</pre>
