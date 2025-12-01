@@ -33,13 +33,65 @@ export default function Modules() {
     }
   };
 
+  const handleUpdateModule = async (moduleId: string, newName: string) => {
+    if (!cid) return;
+    try {
+      const updatedModule = await client.updateModule(cid as string, {
+        _id: moduleId,
+        name: newName,
+      });
+      // Update local state immediately
+      dispatch(
+        setModules(
+          modules.map((m: Module) =>
+            m._id === moduleId ? { ...m, name: newName } : m
+          )
+        )
+      );
+      // Refresh from server to confirm
+      await fetchModules();
+    } catch (err) {
+      console.error("Error updating module:", err);
+      alert("Failed to update module");
+    }
+  };
+
+  const handleDeleteModule = async (moduleId: string) => {
+    if (!cid) return;
+    try {
+      await client.deleteModule(cid as string, moduleId);
+      // Update local state immediately
+      dispatch(setModules(modules.filter((m: Module) => m._id !== moduleId)));
+    } catch (err) {
+      console.error("Error deleting module:", err);
+      alert("Failed to delete module");
+    }
+  };
+
+  const handleAddModule = async () => {
+    if (!cid) return;
+    const name = prompt("Enter module name:");
+    if (!name) return;
+    try {
+      const newModule = await client.createModuleForCourse(cid as string, {
+        name,
+        course: cid,
+      });
+      // Update local state immediately
+      dispatch(setModules([...modules, newModule]));
+    } catch (err) {
+      console.error("Error creating module:", err);
+      alert("Failed to create module");
+    }
+  };
+
   useEffect(() => {
     fetchModules();
   }, [cid]);
 
   return (
     <div>
-      <ModulesControls />
+      <ModulesControls onAddModule={handleAddModule} />
       <br />
       <br />
       <br />
@@ -57,16 +109,9 @@ export default function Modules() {
                 moduleId={mod._id}
                 moduleName={mod.name}
                 courseId={cid || ""}
-                onEdit={() => {
-                  // Module edit functionality - implement API call here
-                  console.log("Edit module:", mod._id);
-                }}
-                onDelete={() => {
-                  // Module delete functionality - implement API call here
-                  console.log("Delete module:", mod._id);
-                }}
+                onEdit={(newName) => handleUpdateModule(mod._id, newName)}
+                onDelete={() => handleDeleteModule(mod._id)}
                 onAddLesson={() => {
-                  // Add lesson functionality - implement API call here
                   console.log("Add lesson to module:", mod._id);
                 }}
               />

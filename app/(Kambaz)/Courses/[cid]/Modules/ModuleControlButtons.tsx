@@ -7,15 +7,15 @@ type ModuleControlButtonsProps = {
   moduleId: string;
   moduleName: string;
   courseId: string;
-  onEdit?: () => void;
+  onEdit?: (newName: string) => void;
   onDelete?: () => void;
   onAddLesson?: () => void;
 };
 
 export default function ModuleControlButtons({
-  moduleId,
+  moduleId, // eslint-disable-line @typescript-eslint/no-unused-vars
   moduleName,
-  courseId,
+  courseId, // eslint-disable-line @typescript-eslint/no-unused-vars
   onEdit,
   onDelete,
   onAddLesson,
@@ -23,7 +23,7 @@ export default function ModuleControlButtons({
   const handleEdit = () => {
     const newName = prompt("Enter new module name:", moduleName);
     if (newName && newName.trim() && onEdit) {
-      onEdit();
+      onEdit(newName);
     }
   };
 
