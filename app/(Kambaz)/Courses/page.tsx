@@ -15,14 +15,43 @@ type Course = {
 };
 
 async function fetchCourses(): Promise<Course[]> {
-  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
-  const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
-  if (!res.ok) return [];
-  return res.json();
+  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER;
+  
+  if (!origin) {
+    console.error("NEXT_PUBLIC_HTTP_SERVER is not configured");
+    return [];
+  }
+  
+  try {
+    const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
+    if (!res.ok) {
+      console.error(`Failed to fetch courses: ${res.status}`);
+      return [];
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
 }
 
 export default async function CoursesIndex() {
+  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER;
   const courses = await fetchCourses();
+
+  if (!origin) {
+    return (
+      <div className="p-4">
+        <div className="alert alert-danger">
+          <h3>⚠️ Configuration Error</h3>
+          <p>
+            <strong>NEXT_PUBLIC_HTTP_SERVER</strong> environment variable is not configured.
+          </p>
+          <p>Please check the <a href="/env-check">environment check page</a> for setup instructions.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!courses || courses.length === 0) {
     return (
