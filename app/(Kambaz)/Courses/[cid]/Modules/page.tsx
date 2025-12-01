@@ -85,6 +85,41 @@ export default function Modules() {
     }
   };
 
+  const handleAddLesson = async (moduleId: string) => {
+    if (!cid) return;
+    const lessonName = prompt("Enter lesson name:");
+    if (!lessonName || !lessonName.trim()) return;
+
+    try {
+      // Find the module and add the new lesson
+      const module = modules.find((m: Module) => m._id === moduleId);
+      if (!module) return;
+
+      const newLesson = {
+        _id: new Date().getTime().toString(),
+        name: lessonName.trim(),
+      };
+
+      const updatedModule = {
+        ...module,
+        lessons: [...(module.lessons || []), newLesson],
+      };
+
+      // Update the module on the server
+      await client.updateModule(cid as string, updatedModule);
+
+      // Update local state
+      dispatch(
+        setModules(
+          modules.map((m: Module) => (m._id === moduleId ? updatedModule : m))
+        )
+      );
+    } catch (err) {
+      console.error("Error adding lesson:", err);
+      alert("Failed to add lesson");
+    }
+  };
+
   useEffect(() => {
     fetchModules();
   }, [cid]);
@@ -111,9 +146,7 @@ export default function Modules() {
                 courseId={cid || ""}
                 onEdit={(newName) => handleUpdateModule(mod._id, newName)}
                 onDelete={() => handleDeleteModule(mod._id)}
-                onAddLesson={() => {
-                  console.log("Add lesson to module:", mod._id);
-                }}
+                onAddLesson={() => handleAddLesson(mod._id)}
               />
             </div>
             <ListGroup className="wd-lessons rounded-0">
