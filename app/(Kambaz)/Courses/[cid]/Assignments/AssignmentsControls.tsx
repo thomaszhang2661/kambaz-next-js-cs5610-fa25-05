@@ -2,7 +2,13 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { FaPlus, FaSearch } from "react-icons/fa";
 
-export default function AssignmentsControls() {
+type AssignmentsControlsProps = {
+  onAddAssignment?: () => void;
+};
+
+export default function AssignmentsControls({
+  onAddAssignment,
+}: AssignmentsControlsProps) {
   return (
     <div id="wd-assignments-controls" className="text-nowrap mb-4">
       <div className="d-flex justify-content-between align-items-center">
@@ -34,7 +40,12 @@ export default function AssignmentsControls() {
             />
             Group
           </Button>
-          <Button variant="danger" size="lg" id="wd-add-assignment-btn">
+          <Button
+            variant="danger"
+            size="lg"
+            id="wd-add-assignment-btn"
+            onClick={onAddAssignment}
+          >
             <FaPlus
               className="position-relative me-2"
               style={{ bottom: "1px" }}
