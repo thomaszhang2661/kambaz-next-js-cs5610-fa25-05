@@ -1,7 +1,20 @@
 "use client";
+import { useEffect, useState } from "react";
 
 export default function DebugPage() {
   const httpServer = process.env.NEXT_PUBLIC_HTTP_SERVER;
+  const [browserInfo, setBrowserInfo] = useState({
+    userAgent: "",
+    currentUrl: "",
+  });
+
+  useEffect(() => {
+    // Only access window/navigator in the browser
+    setBrowserInfo({
+      userAgent: navigator.userAgent,
+      currentUrl: window.location.href,
+    });
+  }, []);
 
   return (
     <div className="container mt-5">
@@ -51,8 +64,8 @@ export default function DebugPage() {
       <div className="card mt-3">
         <div className="card-body">
           <h3>Browser Info</h3>
-          <p>User Agent: {navigator.userAgent}</p>
-          <p>Current URL: {window.location.href}</p>
+          <p>User Agent: {browserInfo.userAgent || "Loading..."}</p>
+          <p>Current URL: {browserInfo.currentUrl || "Loading..."}</p>
         </div>
       </div>
     </div>
