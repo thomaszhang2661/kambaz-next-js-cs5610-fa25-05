@@ -36,7 +36,7 @@ export default function Modules() {
   const handleUpdateModule = async (moduleId: string, newName: string) => {
     if (!cid) return;
     try {
-      const updatedModule = await client.updateModule(cid as string, {
+      await client.updateModule(cid as string, {
         _id: moduleId,
         name: newName,
       });
@@ -92,8 +92,8 @@ export default function Modules() {
 
     try {
       // Find the module and add the new lesson
-      const module = modules.find((m: Module) => m._id === moduleId);
-      if (!module) return;
+      const currentModule = modules.find((m: Module) => m._id === moduleId);
+      if (!currentModule) return;
 
       const newLesson = {
         _id: new Date().getTime().toString(),
@@ -101,8 +101,8 @@ export default function Modules() {
       };
 
       const updatedModule = {
-        ...module,
-        lessons: [...(module.lessons || []), newLesson],
+        ...currentModule,
+        lessons: [...(currentModule.lessons || []), newLesson],
       };
 
       // Update the module on the server
