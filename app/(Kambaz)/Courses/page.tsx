@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import { ListGroup, ListGroupItem, Card } from "react-bootstrap";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 type Course = {
   _id?: string;
@@ -14,30 +16,45 @@ type Course = {
   endDate?: string;
 };
 
-async function fetchCourses(): Promise<Course[]> {
+export default function CoursesIndex() {
   const origin = process.env.NEXT_PUBLIC_HTTP_SERVER;
-  
-  if (!origin) {
-    console.error("NEXT_PUBLIC_HTTP_SERVER is not configured");
-    return [];
-  }
-  
-  try {
-    const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
-    if (!res.ok) {
-      console.error(`Failed to fetch courses: ${res.status}`);
-      return [];
-    }
-    return res.json();
-  } catch (error) {
-    console.error("Error fetching courses:", error);
-    return [];
-  }
-}
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function CoursesIndex() {
-  const origin = process.env.NEXT_PUBLIC_HTTP_SERVER;
-  const courses = await fetchCourses();
+  useEffect(() => {
+    const fetchCourses = async () => {
+      if (!origin) {
+        console.error("NEXT_PUBLIC_HTTP_SERVER is not configured");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${origin}/api/courses`, { cache: "no-store" });
+        if (!res.ok) {
+          console.error(`Failed to fetch courses: ${res.status}`);
+          setLoading(false);
+          return;
+        }
+        const data = await res.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, [origin]);
+
+  if (loading) {
+    return (
+      <div className="p-4">
+        <h2>Loading courses...</h2>
+      </div>
+    );
+  }
 
   if (!origin) {
     return (
@@ -45,9 +62,13 @@ export default async function CoursesIndex() {
         <div className="alert alert-danger">
           <h3>⚠️ Configuration Error</h3>
           <p>
-            <strong>NEXT_PUBLIC_HTTP_SERVER</strong> environment variable is not configured.
+            <strong>NEXT_PUBLIC_HTTP_SERVER</strong> environment variable is not
+            configured.
           </p>
-          <p>Please check the <a href="/env-check">environment check page</a> for setup instructions.</p>
+          <p>
+            Please check the <a href="/env-check">environment check page</a> for
+            setup instructions.
+          </p>
         </div>
       </div>
     );
