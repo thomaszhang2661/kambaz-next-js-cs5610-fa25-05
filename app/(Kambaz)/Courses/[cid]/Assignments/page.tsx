@@ -1,10 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import {
+  ListGroup,
+  ListGroupItem,
+  Button,
+  InputGroup,
+  Form,
+} from "react-bootstrap";
+import InputGroupText from "react-bootstrap/esm/InputGroupText";
 import { BsGripVertical } from "react-icons/bs";
 import { MdAssignment } from "react-icons/md";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaSearch } from "react-icons/fa";
 import AssignmentsControls from "./AssignmentsControls";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -74,7 +81,27 @@ export default function Assignments() {
 
   return (
     <div id="wd-assignments">
-      <AssignmentsControls onAddAssignment={handleCreateAssignment} />
+      {currentUser?.role === "FACULTY" && (
+        <AssignmentsControls onAddAssignment={handleCreateAssignment} />
+      )}
+      {currentUser?.role !== "FACULTY" && (
+        <div id="wd-assignments-controls" className="text-nowrap mb-4">
+          <div className="d-flex justify-content-between align-items-center">
+            <div className="flex-grow-1 me-3">
+              <InputGroup>
+                <InputGroupText>
+                  <FaSearch />
+                </InputGroupText>
+                <Form.Control
+                  id="wd-search-assignment"
+                  placeholder="Search for Assignments"
+                  className="form-control"
+                />
+              </InputGroup>
+            </div>
+          </div>
+        </div>
+      )}
       <br />
       <br />
       <br />

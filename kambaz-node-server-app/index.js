@@ -12,10 +12,36 @@ import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
 
 const app = express();
 
+// Allow multiple origins for CORS
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://kambaz-next-js-cs5610-fa25-05.vercel.app",
+  "https://kambaz-next-js-cs5610-fa25-05-git-a5-thomas-projects-866f7e96.vercel.app",
+];
+
+// Add CLIENT_URL from environment if provided
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(
   cors({
     credentials: true,
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if origin is in allowed list or matches Vercel preview URL pattern
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.includes("kambaz-next-js-cs5610-fa25-05") ||
+        origin.includes("vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
   })
 );
 
