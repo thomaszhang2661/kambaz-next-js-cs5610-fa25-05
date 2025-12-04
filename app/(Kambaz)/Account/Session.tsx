@@ -8,19 +8,17 @@ export default function Session({ children }: PropsWithChildren) {
   const [pending, setPending] = useState(true);
   const dispatch = useDispatch();
 
-  const fetchProfile = async () => {
-    try {
-      const currentUser = await client.profile();
-      dispatch(setCurrentUser(currentUser));
-    } catch (err) {
-      // no user signed in
-    }
-    setPending(false);
-  };
-
   useEffect(() => {
-    fetchProfile();
-  }, []);
+    (async () => {
+      try {
+        const currentUser = await client.profile();
+        dispatch(setCurrentUser(currentUser));
+      } catch {
+        // no user signed in
+      }
+      setPending(false);
+    })();
+  }, [dispatch]);
 
   if (pending) return null;
   return <>{children}</>;

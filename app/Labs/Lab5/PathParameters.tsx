@@ -1,28 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import * as client from "./client";
 
 export default function PathParameters() {
   const [a, setA] = useState("34");
   const [b, setB] = useState("23");
-  const [result, setResult] = useState<string | null>(null);
-
-  const doAdd = async () => {
-    const r = await client.addPath(a, b);
-    setResult(String(r));
-  };
-  const doSubtract = async () => {
-    const r = await client.subtractPath(a, b);
-    setResult(String(r));
-  };
-  const doMultiply = async () => {
-    const r = await client.multiplyPath(a, b);
-    setResult(String(r));
-  };
-  const doDivide = async () => {
-    const r = await client.dividePath(a, b);
-    setResult(String(r));
-  };
 
   return (
     <div>
@@ -85,11 +66,7 @@ export default function PathParameters() {
           Divide
         </a>
       </div>
-      {result !== null && (
-        <div className="mt-2">
-          Result: <strong>{result}</strong>
-        </div>
-      )}
+
       <hr />
     </div>
   );

@@ -11,54 +11,6 @@ export default function WorkingWithArrays() {
     completed: false,
   });
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [result, setResult] = useState<string | null>(null);
-
-  const fetchTodos = async () => {
-    const t = await client.fetchTodos();
-    setTodos(t);
-  };
-  const fetchTodoById = async () => {
-    const t = await client.fetchTodos();
-    const found = t.find((x: any) => String(x.id) === String(todo.id));
-    setResult(found ? JSON.stringify(found) : `Todo ${todo.id} not found`);
-  };
-  const fetchCompleted = async () => {
-    const t = await client.fetchTodos();
-    const completed = t.filter((x: any) => x.completed);
-    setResult(JSON.stringify(completed));
-  };
-  const createTodo = async () => {
-    const t = await client.createNewTodo();
-    setTodos(t);
-    setResult("Created new todo");
-  };
-  const postTodo = async () => {
-    const newTodo = await client.postNewTodo({
-      title: "New Posted Todo",
-      completed: false,
-    });
-    setTodos([...todos, newTodo]);
-    setResult("Posted new todo");
-  };
-  const removeTodo = async () => {
-    const updated = await client.removeTodo(todo as any);
-    setTodos(updated);
-    setResult("Removed todo via GET delete");
-  };
-  const deleteTodo = async () => {
-    await client.deleteTodo(todo as any);
-    setTodos(todos.filter((t) => String(t.id) !== String(todo.id)));
-    setResult("Deleted todo");
-  };
-  const updateTodoTitle = async () => {
-    await client.updateTodo({ ...todo });
-    setTodos(
-      todos.map((t) =>
-        String(t.id) === String(todo.id) ? { ...t, title: todo.title } : t
-      )
-    );
-    setResult("Updated todo title");
-  };
 
   return (
     <div id="wd-working-with-arrays">
@@ -190,7 +142,7 @@ export default function WorkingWithArrays() {
           Update Todo to "NodeJS Assignment"
         </a>
       </div>
-      {result && <div className="mt-2">{result}</div>}
+
       <pre className="mt-2">{JSON.stringify(todos, null, 2)}</pre>
       <hr />
     </div>

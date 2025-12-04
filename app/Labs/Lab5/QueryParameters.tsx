@@ -1,16 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import * as client from "./client";
 
 export default function QueryParameters() {
   const [a, setA] = useState("34");
   const [b, setB] = useState("23");
-  const [result, setResult] = useState<string | null>(null);
-
-  const doCalc = async (operation: string) => {
-    const r = await client.calculator(operation, a, b);
-    setResult(String(r));
-  };
 
   return (
     <div id="wd-query-parameters">
@@ -73,11 +66,7 @@ export default function QueryParameters() {
           Divide
         </a>
       </div>
-      {result !== null && (
-        <div className="mt-2">
-          Result: <strong>{result}</strong>
-        </div>
-      )}
+
       <hr />
     </div>
   );
