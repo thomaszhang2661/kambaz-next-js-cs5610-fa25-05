@@ -5,7 +5,7 @@ import {
   DropdownMenu,
   DropdownToggle,
 } from "react-bootstrap";
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaCompress, FaChartLine } from "react-icons/fa6";
 import GreenCheckmark from "./GreenCheckmark";
 
 export default function ModulesControls() {
@@ -50,6 +50,7 @@ export default function ModulesControls() {
         className="me-1 float-end"
         id="wd-view-progress"
       >
+        <FaChartLine className="me-2" />
         View Progress
       </Button>
 
@@ -59,6 +60,7 @@ export default function ModulesControls() {
         className="me-1 float-end"
         id="wd-collapse-all"
       >
+        <FaCompress className="me-2" />
         Collapse All
       </Button>
     </div>
