@@ -75,7 +75,7 @@ export default function Lab2() {
       <ForegroundColors />
       <BackgroundColors />
       <Padding />
-  <Margins />
+      <Margins />
       <Corners />
       <Dimensions />
       <Positions />

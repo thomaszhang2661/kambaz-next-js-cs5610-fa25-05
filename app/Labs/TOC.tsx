@@ -1,42 +1,39 @@
 import Link from "next/link";
+import { Nav } from "react-bootstrap";
+
 export default function TOC() {
   return (
-    <ul>
-      <li>
-        <Link href="/Labs" id="wd-lab1-link">
-          Home
-        </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab1" id="wd-lab1-link">
+    <Nav variant="pills" className="flex-column" id="wd-toc-pills">
+      <Nav.Item>
+        <Nav.Link as={Link} href="/Labs/Lab1" id="wd-lab1-link">
           Lab 1
-        </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab2" id="wd-lab2-link">
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} href="/Labs/Lab2" id="wd-lab2-link">
           Lab 2
-        </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab3" id="wd-lab3-link">
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} href="/Labs/Lab3" id="wd-lab3-link">
           Lab 3
-        </Link>
-      </li>
-      <li>
-        <Link href="/" id="wd-kambaz-link">
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link as={Link} href="/" id="wd-kambaz-link">
           Kambaz
-        </Link>
-      </li>
-      <li>
-        <a
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link
           href="https://github.com/thomaszhang2661/kambaz-next-js-cs5610-fa25-05"
           id="wd-github"
           target="_blank"
           rel="noopener noreferrer"
         >
           GitHub Repository
-        </a>
-      </li>
-    </ul>
+        </Nav.Link>
+      </Nav.Item>
+    </Nav>
   );
 }
