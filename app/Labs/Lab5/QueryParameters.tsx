@@ -34,6 +34,8 @@ export default function QueryParameters() {
           href={`/Labs/Lab5/query/result?operation=add&a=${encodeURIComponent(
             a
           )}&b=${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Add {a} + {b}
         </a>
@@ -43,6 +45,8 @@ export default function QueryParameters() {
           href={`/Labs/Lab5/query/result?operation=subtract&a=${encodeURIComponent(
             a
           )}&b=${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Subtract {a} - {b}
         </a>
@@ -52,6 +56,8 @@ export default function QueryParameters() {
           href={`/Labs/Lab5/query/result?operation=multiply&a=${encodeURIComponent(
             a
           )}&b=${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Multiply
         </a>
@@ -61,6 +67,8 @@ export default function QueryParameters() {
           href={`/Labs/Lab5/query/result?operation=divide&a=${encodeURIComponent(
             a
           )}&b=${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Divide
         </a>

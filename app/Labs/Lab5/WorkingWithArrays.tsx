@@ -68,6 +68,8 @@ export default function WorkingWithArrays() {
         id="wd-retrieve-todos"
         className="btn btn-primary"
         href={`/Labs/Lab5/arrays/todos`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         Get Todos
       </a>
@@ -84,6 +86,8 @@ export default function WorkingWithArrays() {
           id="wd-retrieve-todo-by-id"
           className="btn btn-primary"
           href={`/Labs/Lab5/arrays/todo/${encodeURIComponent(String(todo.id))}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Get Todo by ID
         </a>
@@ -94,6 +98,8 @@ export default function WorkingWithArrays() {
         id="wd-retrieve-completed-todos"
         className="btn btn-primary"
         href={`/Labs/Lab5/arrays/completed`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         Get Completed Todos
       </a>
@@ -103,6 +109,8 @@ export default function WorkingWithArrays() {
         id="wd-create-todo"
         className="btn btn-primary me-2"
         href={`/Labs/Lab5/arrays/create`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         Create Todo (GET)
       </a>
@@ -110,6 +118,8 @@ export default function WorkingWithArrays() {
         id="wd-post-todo"
         className="btn btn-secondary"
         href={`/Labs/Lab5/arrays/post`}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         Post New Todo
       </a>
@@ -127,6 +137,8 @@ export default function WorkingWithArrays() {
           href={`/Labs/Lab5/arrays/delete/${encodeURIComponent(
             String(todo.id)
           )}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Remove Todo with ID = {todo.id}
         </a>
@@ -136,6 +148,8 @@ export default function WorkingWithArrays() {
           href={`/Labs/Lab5/arrays/delete/${encodeURIComponent(
             String(todo.id)
           )}?method=delete`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           DELETE Todo
         </a>
@@ -159,6 +173,8 @@ export default function WorkingWithArrays() {
           href={`/Labs/Lab5/arrays/update/${encodeURIComponent(
             String(todo.id)
           )}/${encodeURIComponent(todo.title)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Update Todo
         </a>
@@ -168,6 +184,8 @@ export default function WorkingWithArrays() {
           href={`/Labs/Lab5/arrays/update/${encodeURIComponent(
             String(todo.id)
           )}/${encodeURIComponent("NodeJS Assignment")}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Update Todo to "NodeJS Assignment"
         </a>

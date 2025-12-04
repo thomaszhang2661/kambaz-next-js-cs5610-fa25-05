@@ -46,6 +46,8 @@ export default function PathParameters() {
           href={`/Labs/Lab5/path/add/${encodeURIComponent(
             a
           )}/${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Add {a} + {b}
         </a>
@@ -55,6 +57,8 @@ export default function PathParameters() {
           href={`/Labs/Lab5/path/subtract/${encodeURIComponent(
             a
           )}/${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Subtract {a} - {b}
         </a>
@@ -64,6 +68,8 @@ export default function PathParameters() {
           href={`/Labs/Lab5/path/multiply/${encodeURIComponent(
             a
           )}/${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Multiply
         </a>
@@ -73,6 +79,8 @@ export default function PathParameters() {
           href={`/Labs/Lab5/path/divide/${encodeURIComponent(
             a
           )}/${encodeURIComponent(b)}`}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Divide
         </a>
