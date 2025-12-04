@@ -12,7 +12,7 @@ export default async function Page({ params }: Props) {
     const res = await fetch(url, { cache: "no-store" });
     try {
       data = await res.json();
-    } catch (e) {
+    } catch {
       data = await res.text();
     }
   } catch (err) {

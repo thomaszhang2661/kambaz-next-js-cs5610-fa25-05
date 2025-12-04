@@ -17,7 +17,7 @@ export default async function Page({ params }: Props) {
     // API returns a value (number or JSON); try json then fallback to text
     try {
       result = await res.json();
-    } catch (e) {
+    } catch {
       result = await res.text();
     }
   } catch (err) {

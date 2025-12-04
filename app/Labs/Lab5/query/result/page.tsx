@@ -18,7 +18,7 @@ export default async function Page({ searchParams }: Props) {
     const res = await fetch(url, { cache: "no-store" });
     try {
       result = await res.json();
-    } catch (e) {
+    } catch {
       result = await res.text();
     }
   } catch (err) {
