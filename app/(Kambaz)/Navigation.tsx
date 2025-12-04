@@ -69,7 +69,10 @@ export default function KambazNavigation() {
         id="wd-dashboard-link"
       >
         <div className="d-flex flex-column align-items-center">
-          <AiOutlineDashboard className={`mb-1 text-danger`} style={{ fontSize: "2.2rem" }} />
+          <AiOutlineDashboard
+            className={`mb-1 text-danger`}
+            style={{ fontSize: "2.2rem" }}
+          />
           <span
             className={pathname === "/Dashboard" ? "text-danger" : "text-white"}
             style={{ fontSize: "14px" }}
@@ -88,7 +91,10 @@ export default function KambazNavigation() {
         id="wd-course-link"
       >
         <div className="d-flex flex-column align-items-center">
-          <LiaBookSolid className={`mb-1 text-danger`} style={{ fontSize: "2.2rem" }} />
+          <LiaBookSolid
+            className={`mb-1 text-danger`}
+            style={{ fontSize: "2.2rem" }}
+          />
           <span
             className={
               pathname.includes("/Courses") ? "text-danger" : "text-white"
@@ -109,7 +115,10 @@ export default function KambazNavigation() {
         id="wd-calendar-link"
       >
         <div className="d-flex flex-column align-items-center">
-          <IoCalendarOutline className={`mb-1 text-danger`} style={{ fontSize: "2.2rem" }} />
+          <IoCalendarOutline
+            className={`mb-1 text-danger`}
+            style={{ fontSize: "2.2rem" }}
+          />
           <span
             className={pathname === "/Calendar" ? "text-danger" : "text-white"}
             style={{ fontSize: "14px" }}
@@ -128,7 +137,10 @@ export default function KambazNavigation() {
         id="wd-inbox-link"
       >
         <div className="d-flex flex-column align-items-center">
-          <FaInbox className={`mb-1 text-danger`} style={{ fontSize: "2.2rem" }} />
+          <FaInbox
+            className={`mb-1 text-danger`}
+            style={{ fontSize: "2.2rem" }}
+          />
           <span
             className={pathname === "/Inbox" ? "text-danger" : "text-white"}
             style={{ fontSize: "14px" }}
@@ -147,7 +159,10 @@ export default function KambazNavigation() {
         id="wd-labs-link"
       >
         <div className="d-flex flex-column align-items-center">
-          <MdOutlineScience className={`mb-1 text-danger`} style={{ fontSize: "2.2rem" }} />
+          <MdOutlineScience
+            className={`mb-1 text-danger`}
+            style={{ fontSize: "2.2rem" }}
+          />
           <span
             className={
               pathname.includes("/Labs") ? "text-danger" : "text-white"
