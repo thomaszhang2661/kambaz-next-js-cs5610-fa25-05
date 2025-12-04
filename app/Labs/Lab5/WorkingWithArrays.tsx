@@ -64,13 +64,13 @@ export default function WorkingWithArrays() {
     <div id="wd-working-with-arrays">
       <h3>Working with Arrays</h3>
       <h4>Retrieving Arrays</h4>
-      <button
+      <a
         id="wd-retrieve-todos"
         className="btn btn-primary"
-        onClick={fetchTodos}
+        href={`/Labs/Lab5/arrays/todos`}
       >
         Get Todos
-      </button>
+      </a>
       <hr />
       <h4>Retrieving an Item from an Array by ID</h4>
       <div className="d-flex">
@@ -80,39 +80,39 @@ export default function WorkingWithArrays() {
           className="w-50 me-2"
           onChange={(e) => setTodo({ ...todo, id: e.target.value })}
         />
-        <button
+        <a
           id="wd-retrieve-todo-by-id"
           className="btn btn-primary"
-          onClick={fetchTodoById}
+          href={`/Labs/Lab5/arrays/todo/${encodeURIComponent(String(todo.id))}`}
         >
           Get Todo by ID
-        </button>
+        </a>
       </div>
       <hr />
       <h4>Filtering Array Items</h4>
-      <button
+      <a
         id="wd-retrieve-completed-todos"
         className="btn btn-primary"
-        onClick={fetchCompleted}
+        href={`/Labs/Lab5/arrays/completed`}
       >
         Get Completed Todos
-      </button>
+      </a>
       <hr />
       <h4>Creating new Items in an Array</h4>
-      <button
+      <a
         id="wd-create-todo"
         className="btn btn-primary me-2"
-        onClick={createTodo}
+        href={`/Labs/Lab5/arrays/create`}
       >
         Create Todo (GET)
-      </button>
-      <button
+      </a>
+      <a
         id="wd-post-todo"
         className="btn btn-secondary"
-        onClick={postTodo}
+        href={`/Labs/Lab5/arrays/post`}
       >
         Post New Todo
-      </button>
+      </a>
       <hr />
       <h4>Removing from an Array</h4>
       <div className="d-flex">
@@ -121,20 +121,24 @@ export default function WorkingWithArrays() {
           className="w-50 me-2"
           onChange={(e) => setTodo({ ...todo, id: e.target.value })}
         />
-        <button
+        <a
           id="wd-remove-todo"
           className="btn btn-danger me-2"
-          onClick={removeTodo}
+          href={`/Labs/Lab5/arrays/delete/${encodeURIComponent(
+            String(todo.id)
+          )}`}
         >
           Remove Todo with ID = {todo.id}
-        </button>
-        <button
+        </a>
+        <a
           id="wd-delete-todo"
           className="btn btn-outline-danger"
-          onClick={deleteTodo}
+          href={`/Labs/Lab5/arrays/delete/${encodeURIComponent(
+            String(todo.id)
+          )}?method=delete`}
         >
           DELETE Todo
-        </button>
+        </a>
       </div>
       <hr />
       <h4>Updating an Item in an Array</h4>
@@ -149,13 +153,24 @@ export default function WorkingWithArrays() {
           className="w-50 me-2"
           onChange={(e) => setTodo({ ...todo, title: e.target.value })}
         />
-        <button
+        <a
           id="wd-update-todo"
           className="btn btn-primary"
-          onClick={updateTodoTitle}
+          href={`/Labs/Lab5/arrays/update/${encodeURIComponent(
+            String(todo.id)
+          )}/${encodeURIComponent(todo.title)}`}
         >
           Update Todo
-        </button>
+        </a>
+        <a
+          id="wd-update-todo-nodejs"
+          className="btn btn-outline-primary ms-2"
+          href={`/Labs/Lab5/arrays/update/${encodeURIComponent(
+            String(todo.id)
+          )}/${encodeURIComponent("NodeJS Assignment")}`}
+        >
+          Update Todo to "NodeJS Assignment"
+        </a>
       </div>
       {result && <div className="mt-2">{result}</div>}
       <pre className="mt-2">{JSON.stringify(todos, null, 2)}</pre>

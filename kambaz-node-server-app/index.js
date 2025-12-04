@@ -57,12 +57,18 @@ if (
 ) {
   sessionOptions.saveUninitialized = true;
 } else {
+  // In production we want secure cookies; in development we still set
+  // sameSite to 'none' to allow cross-origin XHR, but keep secure false
+  // so localhost (http) can accept the cookie. Only set domain if
+  // explicitly provided via env var (avoids incorrect domain on localhost).
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
     sameSite: "none",
-    secure: true,
-    domain: process.env.SERVER_URL,
+    secure: process.env.NODE_ENV === "production",
   };
+  if (process.env.SESSION_DOMAIN) {
+    sessionOptions.cookie.domain = process.env.SESSION_DOMAIN;
+  }
 }
 
 app.use(session(sessionOptions));

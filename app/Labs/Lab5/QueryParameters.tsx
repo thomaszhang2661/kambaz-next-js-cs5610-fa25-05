@@ -28,34 +28,42 @@ export default function QueryParameters() {
         onChange={(e) => setB(e.target.value)}
       />
       <div className="mt-2">
-        <button
+        <a
           id="wd-query-parameter-add"
           className="btn btn-primary me-2"
-          onClick={() => doCalc("add")}
+          href={`/Labs/Lab5/query/result?operation=add&a=${encodeURIComponent(
+            a
+          )}&b=${encodeURIComponent(b)}`}
         >
           Add {a} + {b}
-        </button>
-        <button
+        </a>
+        <a
           id="wd-query-parameter-subtract"
           className="btn btn-secondary me-2"
-          onClick={() => doCalc("subtract")}
+          href={`/Labs/Lab5/query/result?operation=subtract&a=${encodeURIComponent(
+            a
+          )}&b=${encodeURIComponent(b)}`}
         >
           Subtract {a} - {b}
-        </button>
-        <button
+        </a>
+        <a
           id="wd-query-parameter-multiply"
           className="btn btn-info me-2"
-          onClick={() => doCalc("multiply")}
+          href={`/Labs/Lab5/query/result?operation=multiply&a=${encodeURIComponent(
+            a
+          )}&b=${encodeURIComponent(b)}`}
         >
           Multiply
-        </button>
-        <button
+        </a>
+        <a
           id="wd-query-parameter-divide"
           className="btn btn-warning"
-          onClick={() => doCalc("divide")}
+          href={`/Labs/Lab5/query/result?operation=divide&a=${encodeURIComponent(
+            a
+          )}&b=${encodeURIComponent(b)}`}
         >
           Divide
-        </button>
+        </a>
       </div>
       {result !== null && (
         <div className="mt-2">

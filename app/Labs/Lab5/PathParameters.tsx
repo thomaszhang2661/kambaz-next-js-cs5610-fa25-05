@@ -40,34 +40,42 @@ export default function PathParameters() {
         onChange={(e) => setB(e.target.value)}
       />
       <div className="mt-2">
-        <button
+        <a
           className="btn btn-primary me-2"
           id="wd-path-parameter-add"
-          onClick={doAdd}
+          href={`/Labs/Lab5/path/add/${encodeURIComponent(
+            a
+          )}/${encodeURIComponent(b)}`}
         >
           Add {a} + {b}
-        </button>
-        <button
+        </a>
+        <a
           className="btn btn-danger me-2"
           id="wd-path-parameter-subtract"
-          onClick={doSubtract}
+          href={`/Labs/Lab5/path/subtract/${encodeURIComponent(
+            a
+          )}/${encodeURIComponent(b)}`}
         >
           Subtract {a} - {b}
-        </button>
-        <button
+        </a>
+        <a
           className="btn btn-secondary me-2"
           id="wd-path-parameter-multiply"
-          onClick={doMultiply}
+          href={`/Labs/Lab5/path/multiply/${encodeURIComponent(
+            a
+          )}/${encodeURIComponent(b)}`}
         >
           Multiply
-        </button>
-        <button
+        </a>
+        <a
           className="btn btn-warning"
           id="wd-path-parameter-divide"
-          onClick={doDivide}
+          href={`/Labs/Lab5/path/divide/${encodeURIComponent(
+            a
+          )}/${encodeURIComponent(b)}`}
         >
           Divide
-        </button>
+        </a>
       </div>
       {result !== null && (
         <div className="mt-2">
