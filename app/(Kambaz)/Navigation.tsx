@@ -44,9 +44,7 @@ export default function KambazNavigation() {
       >
         <div className="d-flex flex-column align-items-center">
           <FaRegCircleUser
-            className={`mb-1 ${
-              pathname.includes("/Account") ? "text-danger" : "text-white"
-            }`}
+            className={`mb-1 text-danger`}
             style={{ fontSize: "2.2rem" }}
           />
           <span

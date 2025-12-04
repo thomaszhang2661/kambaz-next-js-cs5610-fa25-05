@@ -18,6 +18,7 @@ import BootstrapForms from "./BootstrapForms";
 import BootstrapNavigation from "./BootstrapNavigation";
 import Corners from "./Corners";
 import Margins from "./Margins";
+import Borders from "./Borders";
 
 export default function Lab2() {
   return (
@@ -76,6 +77,7 @@ export default function Lab2() {
       <BackgroundColors />
       <Padding />
       <Margins />
+      <Borders />
       <Corners />
       <Dimensions />
       <Positions />
