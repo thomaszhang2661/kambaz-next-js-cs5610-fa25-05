@@ -23,16 +23,6 @@ export default function Modules() {
     (state: RootState) => state.modulesReducer as any
   );
 
-  const fetchModules = async () => {
-    if (!cid) return;
-    try {
-      const data = await client.findModulesForCourse(cid as string);
-      dispatch(setModules(data));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleUpdateModule = async (moduleId: string, newName: string) => {
     if (!cid) return;
     try {
@@ -49,7 +39,12 @@ export default function Modules() {
         )
       );
       // Refresh from server to confirm
-      await fetchModules();
+      try {
+        const latest = await client.findModulesForCourse(cid as string);
+        dispatch(setModules(latest));
+      } catch (err) {
+        console.error(err);
+      }
     } catch (err) {
       console.error("Error updating module:", err);
       alert("Failed to update module");
@@ -121,8 +116,17 @@ export default function Modules() {
   };
 
   useEffect(() => {
+    const fetchModules = async () => {
+      if (!cid) return;
+      try {
+        const data = await client.findModulesForCourse(cid as string);
+        dispatch(setModules(data));
+      } catch (err) {
+        console.error(err);
+      }
+    };
     fetchModules();
-  }, [cid]);
+  }, [cid, dispatch]);
 
   return (
     <div>

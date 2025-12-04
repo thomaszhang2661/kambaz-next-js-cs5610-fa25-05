@@ -46,38 +46,38 @@ export default function Dashboard() {
     new Set()
   );
 
-  const fetchCourses = async () => {
-    try {
-      if (showAllCourses) {
-        const allCourses = await client.fetchAllCourses();
-        dispatch(setCourses(allCourses));
-      } else {
-        const myCourses = await client.findMyCourses();
-        dispatch(setCourses(myCourses));
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchEnrolledCourses = async () => {
-    try {
-      const myCourses = await client.findMyCourses();
-      const ids = new Set<string>(
-        myCourses.map((c: Course) => (c._id || c.id) as string)
-      );
-      setEnrolledCourseIds(ids);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        if (showAllCourses) {
+          const allCourses = await client.fetchAllCourses();
+          dispatch(setCourses(allCourses));
+        } else {
+          const myCourses = await client.findMyCourses();
+          dispatch(setCourses(myCourses));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const fetchEnrolledCourses = async () => {
+      try {
+        const myCourses = await client.findMyCourses();
+        const ids = new Set<string>(
+          myCourses.map((c: Course) => (c._id || c.id) as string)
+        );
+        setEnrolledCourseIds(ids);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchCourses();
     if (showAllCourses) {
       fetchEnrolledCourses();
     }
-  }, [currentUser, showAllCourses]);
+  }, [currentUser, showAllCourses, dispatch]);
 
   const handleAddNew = async () => {
     try {

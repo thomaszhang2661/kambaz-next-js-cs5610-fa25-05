@@ -42,13 +42,12 @@ export default function Assignments() {
   );
   const [assignments, setAssignments] = useState<Assignment[]>([]);
 
-  const fetchAssignments = async () => {
-    if (!cid) return;
-    const data = await findAssignmentsForCourse(cid);
-    setAssignments(data || []);
-  };
-
   useEffect(() => {
+    const fetchAssignments = async () => {
+      if (!cid) return;
+      const data = await findAssignmentsForCourse(cid);
+      setAssignments(data || []);
+    };
     fetchAssignments();
   }, [cid]);
 

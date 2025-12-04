@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import * as client from "./client";
 import type { Todo } from "./client";
 
 export default function WorkingWithArrays() {
@@ -10,7 +9,7 @@ export default function WorkingWithArrays() {
     description: "",
     completed: false,
   });
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const todos: Todo[] = [];
 
   return (
     <div id="wd-working-with-arrays">
@@ -139,7 +138,7 @@ export default function WorkingWithArrays() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Update Todo to "NodeJS Assignment"
+          Update Todo to NodeJS Assignment
         </a>
       </div>
 

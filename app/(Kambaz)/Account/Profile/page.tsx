@@ -33,7 +33,7 @@ export default function Profile() {
   const signout = async () => {
     try {
       await client.signout();
-    } catch (err) {
+    } catch {
       // ignore
     }
     dispatch(setCurrentUser(null));

@@ -19,11 +19,6 @@ export default function WorkingWithObjects() {
     const a = await client.fetchAssignment();
     setFetched(a);
   };
-  const fetchTitle = async () => {
-    await client.updateTitle; // no-op placeholder (server has assignment/title route for update)
-    // we'll just use fetchAssignment to get latest
-    await fetchAssignment();
-  };
   const updateTitle = async () => {
     const updated = await client.updateTitle(assignment.title);
     setFetched(updated);
