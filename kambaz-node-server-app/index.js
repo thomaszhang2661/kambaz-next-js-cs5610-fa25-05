@@ -10,7 +10,6 @@ import CourseRoutes from "./Kambaz/Courses/routes.js";
 import ModulesRoutes from "./Kambaz/Modules/routes.js";
 import EnrollmentsRoutes from "./Kambaz/Enrollments/routes.js";
 import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
-import QuizzesRoutes from "./Kambaz/Quizzes/routes.js";
 
 const app = express();
 
@@ -18,45 +17,13 @@ const app = express();
 const getAllowedOrigins = () => {
   const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
   // Split by comma and trim whitespace
-  const origins = clientUrl.split(",").map((url) => url.trim());
-  // Also allow any Vercel preview URLs for this project
-  return origins;
-};
-
-// Dynamic CORS origin function to handle Vercel preview deployments
-const corsOriginFunction = (origin, callback) => {
-  const allowedOrigins = getAllowedOrigins();
-
-  // Allow requests with no origin (like mobile apps or curl requests)
-  if (!origin) {
-    return callback(null, true);
-  }
-
-  // Check if origin is in allowed list
-  if (allowedOrigins.includes(origin)) {
-    return callback(null, true);
-  }
-
-  // Allow any Vercel preview URL for this project
-  if (
-    origin.includes("kambaz-next-js-cs5610-fa25-05") &&
-    origin.includes("vercel.app")
-  ) {
-    return callback(null, true);
-  }
-
-  // Allow localhost for development
-  if (origin.includes("localhost")) {
-    return callback(null, true);
-  }
-
-  callback(new Error("Not allowed by CORS"));
+  return clientUrl.split(",").map((url) => url.trim());
 };
 
 app.use(
   cors({
     credentials: true,
-    origin: corsOriginFunction,
+    origin: getAllowedOrigins(),
   })
 );
 
@@ -76,7 +43,7 @@ if (
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    // Don't set domain - let browser handle it for cross-origin requests
+    domain: process.env.SERVER_URL,
   };
 }
 
@@ -91,7 +58,6 @@ CourseRoutes(app);
 ModulesRoutes(app);
 EnrollmentsRoutes(app);
 AssignmentRoutes(app);
-QuizzesRoutes(app, db);
 
 // Dynamic import to avoid potential ESM resolution issues on some filesystems
 try {
