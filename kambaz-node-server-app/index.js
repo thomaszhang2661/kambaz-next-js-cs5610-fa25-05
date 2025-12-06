@@ -18,13 +18,45 @@ const app = express();
 const getAllowedOrigins = () => {
   const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
   // Split by comma and trim whitespace
-  return clientUrl.split(",").map((url) => url.trim());
+  const origins = clientUrl.split(",").map((url) => url.trim());
+  // Also allow any Vercel preview URLs for this project
+  return origins;
+};
+
+// Dynamic CORS origin function to handle Vercel preview deployments
+const corsOriginFunction = (origin, callback) => {
+  const allowedOrigins = getAllowedOrigins();
+
+  // Allow requests with no origin (like mobile apps or curl requests)
+  if (!origin) {
+    return callback(null, true);
+  }
+
+  // Check if origin is in allowed list
+  if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
+
+  // Allow any Vercel preview URL for this project
+  if (
+    origin.includes("kambaz-next-js-cs5610-fa25-05") &&
+    origin.includes("vercel.app")
+  ) {
+    return callback(null, true);
+  }
+
+  // Allow localhost for development
+  if (origin.includes("localhost")) {
+    return callback(null, true);
+  }
+
+  callback(new Error("Not allowed by CORS"));
 };
 
 app.use(
   cors({
     credentials: true,
-    origin: getAllowedOrigins(),
+    origin: corsOriginFunction,
   })
 );
 
@@ -44,7 +76,7 @@ if (
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    domain: process.env.SERVER_URL,
+    // Don't set domain - let browser handle it for cross-origin requests
   };
 }
 
