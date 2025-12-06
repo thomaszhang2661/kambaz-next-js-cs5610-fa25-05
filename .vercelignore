@@ -1,0 +1,13 @@
+.git
+.gitignore
+node_modules
+npm-debug.log
+*.md
+.vscode
+.env.example
+.DS_Store
+.next/cache
+kambaz-node-server-app
+public
+scripts
+docs
