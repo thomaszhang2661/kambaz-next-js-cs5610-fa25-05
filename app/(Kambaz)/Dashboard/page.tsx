@@ -106,22 +106,40 @@ export default function Dashboard() {
   };
 
   const handleEnroll = async (courseId: string) => {
+    if (!currentUser) {
+      alert("Please sign in to enroll in courses");
+      return;
+    }
     try {
       await client.enrollInCourse(courseId);
       setEnrolledCourseIds(new Set([...enrolledCourseIds, courseId]));
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      if (err?.response?.status === 401) {
+        alert("Session expired. Please sign in again.");
+      } else {
+        alert("Failed to enroll. Please try again.");
+      }
     }
   };
 
   const handleUnenroll = async (courseId: string) => {
+    if (!currentUser) {
+      alert("Please sign in to manage enrollments");
+      return;
+    }
     try {
       await client.unenrollFromCourse(courseId);
       const newSet = new Set(enrolledCourseIds);
       newSet.delete(courseId);
       setEnrolledCourseIds(newSet);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      if (err?.response?.status === 401) {
+        alert("Session expired. Please sign in again.");
+      } else {
+        alert("Failed to unenroll. Please try again.");
+      }
     }
   };
 

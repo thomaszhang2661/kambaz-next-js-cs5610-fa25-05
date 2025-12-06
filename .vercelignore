@@ -6,8 +6,6 @@ npm-debug.log
 .vscode
 .env.example
 .DS_Store
-.next/cache
 kambaz-node-server-app
-public
 scripts
 docs
