@@ -1,13 +1,5 @@
-"use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/dist/client/components/navigation";
 
-export default function KambazPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/Account/Signin");
-  }, [router]);
-
-  return null;
+export default function AccountPage() {
+  redirect("/Account/Signin");
 }
