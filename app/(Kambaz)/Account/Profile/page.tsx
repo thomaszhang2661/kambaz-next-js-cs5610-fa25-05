@@ -21,7 +21,10 @@ export default function Profile() {
   const updateProfile = async () => {
     try {
       const updatedProfile = await client.updateUser(profile);
-      dispatch(setCurrentUser(updatedProfile));
+      // 重新从后端获取最新的完整用户数据，确保数据持久化
+      const freshProfile = await client.profile();
+      dispatch(setCurrentUser(freshProfile));
+      setProfile(freshProfile);
       alert("Profile updated");
     } catch (err: any) {
       console.error(err);
