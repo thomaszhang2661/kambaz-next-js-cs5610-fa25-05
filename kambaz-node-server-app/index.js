@@ -43,7 +43,7 @@ if (
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    domain: process.env.SERVER_URL,
+    // Do NOT set domain - let browser handle it automatically for cross-origin cookies
   };
 }
 
