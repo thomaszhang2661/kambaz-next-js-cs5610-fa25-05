@@ -10,6 +10,7 @@ import CourseRoutes from "./Kambaz/Courses/routes.js";
 import ModulesRoutes from "./Kambaz/Modules/routes.js";
 import EnrollmentsRoutes from "./Kambaz/Enrollments/routes.js";
 import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
+import QuizzesRoutes from "./Kambaz/Quizzes/routes.js";
 
 const app = express();
 
@@ -58,6 +59,7 @@ CourseRoutes(app);
 ModulesRoutes(app);
 EnrollmentsRoutes(app);
 AssignmentRoutes(app);
+QuizzesRoutes(app, db);
 
 // Dynamic import to avoid potential ESM resolution issues on some filesystems
 try {
