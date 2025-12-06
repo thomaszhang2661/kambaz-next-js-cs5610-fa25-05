@@ -1,12 +1,13 @@
-// export default function Kambaz() {
-//   return (
-//     <div>
-//       <h1>Kambaz</h1>
-//     </div>
-//   );
-// }
-import { redirect } from "next/navigation";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AccountPage() {
-  redirect("/Account/Signin");
+export default function KambazPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/Account/Signin");
+  }, [router]);
+
+  return null;
 }
