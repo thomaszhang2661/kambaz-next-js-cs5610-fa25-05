@@ -40,17 +40,31 @@ if (
 ) {
   sessionOptions.saveUninitialized = true;
 } else {
-  sessionOptions.proxy = true;
+  // Trust proxy must be set on app for secure cookies behind reverse proxy (Render, Heroku, etc.)
+  app.set("trust proxy", 1);
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24, // 24 hours
   };
 }
 
 app.use(session(sessionOptions));
 app.use(express.json());
 
-// NOTE: debug route removed - use /api/users/profile for session checks
+// Debug endpoint to check session status (helpful for diagnosing auth issues)
+app.get("/api/debug/session", (req, res) => {
+  res.json({
+    hasSession: !!req.session,
+    isAuthenticated: !!req.session?.currentUser,
+    userRole: req.session?.currentUser?.role || null,
+    userId: req.session?.currentUser?._id || null,
+    username: req.session?.currentUser?.username || null,
+    sessionId: req.sessionID,
+    cookie: req.session?.cookie || null,
+  });
+});
 
 // register routes (after cors, session, json)
 UserRoutes(app);
