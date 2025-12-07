@@ -170,21 +170,40 @@ export default function Dashboard() {
       </div>
       {currentUser?.role === "FACULTY" && (
         <h5 className="mt-3">
-          New Course
+          {course._id ? `Edit: ${course.name}` : "New Course"}
           <Button
             className="btn btn-primary float-end ms-2"
             id="wd-add-new-course-click"
             onClick={handleAddNew}
+            disabled={!!course._id}
           >
             Add
           </Button>
           <Button
-            className="btn btn-warning float-end"
+            className="btn btn-warning float-end ms-2"
             id="wd-update-course-click"
             onClick={handleUpdate}
+            disabled={!course._id}
           >
             Update
           </Button>
+          {course._id && (
+            <Button
+              className="btn btn-secondary float-end"
+              onClick={() =>
+                setCourse({
+                  name: "New Course",
+                  number: "New Number",
+                  startDate: "2023-09-10",
+                  endDate: "2023-12-15",
+                  image: "/images/reactjs.webp",
+                  description: "New Description",
+                })
+              }
+            >
+              Cancel
+            </Button>
+          )}
         </h5>
       )}
       {currentUser?.role === "FACULTY" && (
