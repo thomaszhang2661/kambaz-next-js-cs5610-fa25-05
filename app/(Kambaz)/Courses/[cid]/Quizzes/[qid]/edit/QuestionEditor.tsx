@@ -48,7 +48,7 @@ export default function QuestionEditor({
   }, [question]);
 
   const handleTypeChange = (newType: "mcq" | "tf" | "fill") => {
-    let newQuestion: Question = {
+    const newQuestion: Question = {
       ...editedQuestion,
       type: newType,
     };
