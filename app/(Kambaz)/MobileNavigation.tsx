@@ -13,6 +13,8 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 interface MobileNavigationProps {
   courseId?: string;
@@ -22,6 +24,12 @@ export default function MobileNavigation({ courseId }: MobileNavigationProps) {
   const [showKambazNav, setShowKambazNav] = useState(false);
   const [showCourseNav, setShowCourseNav] = useState(false);
   const pathname = usePathname();
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
+  );
+
+  // Determine Account link destination based on login status
+  const accountHref = currentUser ? "/Account/Profile" : "/Account/Signin";
 
   const courseLinks = [
     { href: `/Courses/${courseId}/Home`, label: "Home" },
@@ -99,20 +107,63 @@ export default function MobileNavigation({ courseId }: MobileNavigationProps) {
         </OffcanvasHeader>
         <OffcanvasBody className="p-0 bg-white">
           <ListGroup className="rounded-0">
-            <ListGroupItem className="text-danger fw-bold border-0 bg-light">
-              Dashboard
-            </ListGroupItem>
-            <ListGroupItem className="border-0">Account</ListGroupItem>
-            <ListGroupItem className="border-0">Courses</ListGroupItem>
-            <ListGroupItem className="border-0">Calendar</ListGroupItem>
             <ListGroupItem className="border-0">
-              <div className="d-flex align-items-center">
-                Inbox
-                <span className="badge bg-danger ms-2">23</span>
-              </div>
+              <Link
+                href="/Dashboard"
+                className={`text-decoration-none ${pathname === "/Dashboard" ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                Dashboard
+              </Link>
             </ListGroupItem>
-            <ListGroupItem className="border-0">History</ListGroupItem>
-            <ListGroupItem className="border-0">Help</ListGroupItem>
+            <ListGroupItem className="border-0">
+              <Link
+                href={accountHref}
+                className={`text-decoration-none ${pathname.includes("/Account") ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                Account
+              </Link>
+            </ListGroupItem>
+            <ListGroupItem className="border-0">
+              <Link
+                href="/Courses"
+                className={`text-decoration-none ${pathname.includes("/Courses") ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                Courses
+              </Link>
+            </ListGroupItem>
+            <ListGroupItem className="border-0">
+              <Link
+                href="/Calendar"
+                className={`text-decoration-none ${pathname === "/Calendar" ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                Calendar
+              </Link>
+            </ListGroupItem>
+            <ListGroupItem className="border-0">
+              <Link
+                href="/Inbox"
+                className={`text-decoration-none ${pathname === "/Inbox" ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                <div className="d-flex align-items-center">
+                  Inbox
+                  <span className="badge bg-danger ms-2">23</span>
+                </div>
+              </Link>
+            </ListGroupItem>
+            <ListGroupItem className="border-0">
+              <Link
+                href="/Labs"
+                className={`text-decoration-none ${pathname.includes("/Labs") ? "text-danger fw-bold" : "text-dark"}`}
+                onClick={() => setShowKambazNav(false)}
+              >
+                Labs
+              </Link>
+            </ListGroupItem>
           </ListGroup>
         </OffcanvasBody>
       </Offcanvas>

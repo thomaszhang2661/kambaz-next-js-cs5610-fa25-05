@@ -4,21 +4,28 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export default function AccountNavigation() {
   const [activeLink, setActiveLink] = useState("");
   const pathname = usePathname();
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
+  );
 
   useEffect(() => {
     const currentPath = pathname?.split("/").pop() || "";
     setActiveLink(currentPath);
   }, [pathname]);
 
-  const links = [
-    { label: "Signin", href: "/Account/Signin" },
-    { label: "Signup", href: "/Account/Signup" },
-    { label: "Profile", href: "/Account/Profile" },
-  ];
+  // Show Signin/Signup only when not logged in, Profile only when logged in
+  const links = currentUser
+    ? [{ label: "Profile", href: "/Account/Profile" }]
+    : [
+        { label: "Signin", href: "/Account/Signin" },
+        { label: "Signup", href: "/Account/Signup" },
+      ];
 
   return (
     <div id="wd-account-navigation" style={{ width: "200px" }}>

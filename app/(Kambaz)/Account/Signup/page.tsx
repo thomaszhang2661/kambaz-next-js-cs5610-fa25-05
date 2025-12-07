@@ -1,18 +1,27 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { FormControl } from "react-bootstrap";
+import { FormControl, Form } from "react-bootstrap";
 import * as client from "../client";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { useRouter } from "next/navigation";
 
 export default function Signup() {
-  const [user, setUser] = useState<any>({});
+  const [user, setUser] = useState<any>({ role: "STUDENT" });
+  const [verifyPassword, setVerifyPassword] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
 
   const signup = async () => {
+    if (!user.username || !user.password) {
+      alert("Username and password are required");
+      return;
+    }
+    if (user.password !== verifyPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     try {
       const currentUser = await client.signup(user);
       dispatch(setCurrentUser(currentUser));
@@ -50,6 +59,8 @@ export default function Signup() {
         placeholder="verify password"
         type="password"
         className="mb-2"
+        value={verifyPassword}
+        onChange={(e) => setVerifyPassword(e.target.value)}
       />
       <FormControl
         id="wd-firstName"
@@ -73,6 +84,17 @@ export default function Signup() {
         value={user.email || ""}
         onChange={(e) => setUser({ ...user, email: e.target.value })}
       />
+      <Form.Group className="mb-3">
+        <Form.Label>Role:</Form.Label>
+        <Form.Select
+          id="wd-role"
+          value={user.role || "STUDENT"}
+          onChange={(e) => setUser({ ...user, role: e.target.value })}
+        >
+          <option value="STUDENT">Student</option>
+          <option value="FACULTY">Faculty</option>
+        </Form.Select>
+      </Form.Group>
       <button
         id="wd-signup-btn"
         className="btn btn-primary w-100 mb-2"

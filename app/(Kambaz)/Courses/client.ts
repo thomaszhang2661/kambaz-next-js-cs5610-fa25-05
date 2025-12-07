@@ -152,3 +152,73 @@ export const deleteUser = async (userId: string) => {
   const response = await axiosWithCredentials.delete(`${USERS_API}/${userId}`);
   return response.data;
 };
+
+export const findQuizzesForCourse = async (courseId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/quizzes`
+  );
+  return response.data;
+};
+
+export const getQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}`
+  );
+  return response.data;
+};
+
+export const createQuizForCourse = async (courseId: string, quiz: any) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes`,
+    quiz
+  );
+  return response.data;
+};
+
+export const updateQuiz = async (courseId: string, quiz: any) => {
+  const response = await axiosWithCredentials.put(
+    `${COURSES_API}/${courseId}/quizzes/${quiz._id}`,
+    quiz
+  );
+  return response.data;
+};
+
+export const deleteQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.delete(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}`
+  );
+  return response.data;
+};
+
+export const publishQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/publish`
+  );
+  return response.data;
+};
+
+export const unpublishQuiz = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/unpublish`
+  );
+  return response.data;
+};
+
+export const findQuizAttempts = async (courseId: string, quizId: string) => {
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`
+  );
+  return response.data;
+};
+
+export const submitQuizAttempt = async (
+  courseId: string,
+  quizId: string,
+  answers: any[]
+) => {
+  const response = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`,
+    { answers }
+  );
+  return response.data;
+};

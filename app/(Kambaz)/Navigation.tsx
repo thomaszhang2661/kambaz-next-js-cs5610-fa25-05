@@ -9,9 +9,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import type { ElementType } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
 
 export default function KambazNavigation() {
   const pathname = usePathname();
+  const { currentUser } = useSelector(
+    (state: RootState) => (state as any).accountReducer
+  );
+
+  // Determine Account link destination based on login status
+  const accountHref = currentUser ? "/Account/Profile" : "/Account/Signin";
 
   const links: { label: string; path: string; Icon: ElementType }[] = [
     { label: "Dashboard", path: "/Dashboard", Icon: AiOutlineDashboard },
@@ -49,7 +57,7 @@ export default function KambazNavigation() {
 
       {/* Account (keep as first interactive item) */}
       <Link
-        href="/Account/Signin"
+        href={accountHref}
         className={`list-group-item border-0 text-center text-decoration-none py-3 ${
           pathname.includes("/Account") ? "bg-white" : "bg-black"
         }`}
