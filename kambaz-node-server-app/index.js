@@ -44,7 +44,6 @@ if (
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    domain: process.env.SERVER_URL,
   };
 }
 
