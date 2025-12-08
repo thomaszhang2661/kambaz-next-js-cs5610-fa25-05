@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# demo preparation (local only)
+QUIZ_DEMO_PREPARATION.md

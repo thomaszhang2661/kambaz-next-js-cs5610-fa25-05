@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import * as client from "../client";
 import { useRouter } from "next/navigation";
+import { FaUsers } from "react-icons/fa";
 
 export default function Signin() {
   const [credentials, setCredentials] = useState<any>({});
@@ -34,6 +35,15 @@ export default function Signin() {
       style={{ maxWidth: "400px" }}
     >
       <h1>Sign in</h1>
+
+      {/* Team Info Link */}
+      <div className="alert alert-info mb-3">
+        <FaUsers className="me-2" />
+        <Link href="/Account/Team" className="alert-link">
+          View Team Information & GitHub Repositories
+        </Link>
+      </div>
+
       <FormControl
         id="wd-username"
         placeholder="username"
