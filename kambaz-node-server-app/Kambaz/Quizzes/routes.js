@@ -51,10 +51,22 @@ export default function QuizzesRoutes(app, db) {
     const { qid } = req.params;
     const quiz = await dao.findQuizById(qid);
     if (!quiz) return res.sendStatus(404);
+
     const current = req.session.currentUser;
-    if (!quiz.published && current && current.role !== "FACULTY") {
-      return res.status(403).json({ error: "Quiz not published" });
+
+    // 测验未发布
+    if (!quiz.published) {
+      // 未登录
+      if (!current) {
+        return res.status(401).json({ error: "未登录" });
+      }
+      // 不是教师
+      if (current.role !== "FACULTY") {
+        return res.status(403).json({ error: "Quiz not published" });
+      }
     }
+
+    // 允许访问
     res.json(quiz);
   };
 

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+kambaz-node-server-app/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -39,3 +40,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# demo preparation (local only)
+QUIZ_DEMO_PREPARATION.md
+
+# local testing/documentation files (not needed in remote)
+TESTING_GUIDE.md
+TESTING_QUICK_REFERENCE.md
+UNPUBLISH_ISSUE_ANALYSIS.md
+PRODUCTION_TEST_REPORT.md
+quick-test.sh
+quick-test-prod.sh
+kambaz-node-server-app/smoke-test.sh
+kambaz-node-server-app/smoke-test-quizzes.sh
