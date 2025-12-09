@@ -8,22 +8,7 @@ import {
 } from "react-bootstrap";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import { v4 as uuidv4 } from "uuid";
-
-type Choice = {
-  _id: string;
-  text: string;
-  isCorrect: boolean;
-};
-
-type Question = {
-  _id: string;
-  type: "mcq" | "tf" | "fill";
-  title: string;
-  body: string;
-  points: number;
-  choices: Choice[];
-  blanks?: { _id: string; answers: string[] }[];
-};
+import { Question, Choice } from "../../types";
 
 interface QuestionEditorProps {
   question: Question;
@@ -43,9 +28,6 @@ export default function QuestionEditor({
   const [isEditing, setIsEditing] = useState(isNew);
   const [editedQuestion, setEditedQuestion] = useState<Question>({ ...question });
 
-  useEffect(() => {
-    setEditedQuestion({ ...question });
-  }, [question]);
 
   const handleTypeChange = (newType: "mcq" | "tf" | "fill") => {
     const newQuestion: Question = {
@@ -79,16 +61,21 @@ export default function QuestionEditor({
     setEditedQuestion({ ...editedQuestion, [field]: value });
   };
 
-  const handleChoiceChange = (index: number, field: string, value: any) => {
-    const choices = [...editedQuestion.choices];
+  const handleChoiceChange = (id: string, field: string, value: any) => {
     if (field === "isCorrect" && value === true) {
-      choices.forEach((c, i) => {
-        choices[i] = { ...c, isCorrect: i === index };
-      });
+      // Set all choices to false except the one with matching id
+      const choices = editedQuestion.choices.map((c) => ({
+        ...c,
+        isCorrect: c._id === id,
+      }));
+      setEditedQuestion({ ...editedQuestion, choices });
     } else {
-      choices[index] = { ...choices[index], [field]: value };
+      // Update only the specific field of the choice with matching id
+      const choices = editedQuestion.choices.map((c) =>
+        c._id === id ? { ...c, [field]: value } : c
+      );
+      setEditedQuestion({ ...editedQuestion, choices });
     }
-    setEditedQuestion({ ...editedQuestion, choices });
   };
 
   const addChoice = () => {
@@ -99,12 +86,21 @@ export default function QuestionEditor({
     setEditedQuestion({ ...editedQuestion, choices });
   };
 
-  const deleteChoice = (index: number) => {
-    if (editedQuestion.choices.length <= 2) return;
-    const choices = editedQuestion.choices.filter((_, i) => i !== index);
-    if (!choices.some((c) => c.isCorrect)) {
+  const deleteChoice = (id: string) => {
+    const choices = editedQuestion.choices.filter((c) => c._id !== id);
+    
+    let hasCorrectAnswer = false;
+    for (const choice of choices) {
+      if (choice.isCorrect) {
+        hasCorrectAnswer = true;
+        break;
+      }
+    }
+
+    if (!hasCorrectAnswer) {
       choices[0].isCorrect = true;
     }
+    
     setEditedQuestion({ ...editedQuestion, choices });
   };
 
@@ -156,19 +152,6 @@ export default function QuestionEditor({
     setIsEditing(false);
   };
 
-  const getHelpText = () => {
-    switch (editedQuestion.type) {
-      case "mcq":
-        return "Enter your question and multiple answers, then select the one correct answer.";
-      case "tf":
-        return "Enter your question text, then select if True or False is the correct answer.";
-      case "fill":
-        return "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer.";
-      default:
-        return "";
-    }
-  };
-
   // Preview Mode
   if (!isEditing) {
     return (
@@ -176,7 +159,7 @@ export default function QuestionEditor({
         <Card.Body className="d-flex justify-content-between align-items-start">
           <div>
             <strong>Question {questionIndex + 1}:</strong>{" "}
-            {editedQuestion.title || "Untitled"} ({editedQuestion.type.toUpperCase()})
+            {editedQuestion.title || "Untitled"}
             <div className="text-muted small mt-1">
               {editedQuestion.body || "No question text"}
             </div>
@@ -237,22 +220,10 @@ export default function QuestionEditor({
           </div>
         </div>
 
-        {/* Help Text */}
-        <p className="text-muted small mb-3">{getHelpText()}</p>
-
         {/* Question Label and Toolbar */}
         <div className="mb-2">
           <strong>Question:</strong>
         </div>
-        <div className="border rounded-top p-2 bg-light d-flex gap-3 small text-muted">
-          <span>Edit</span>
-          <span>View</span>
-          <span>Insert</span>
-          <span>Format</span>
-          <span>Tools</span>
-          <span>Table</span>
-        </div>
-
         {/* Question Text */}
         <Form.Control
           as="textarea"
@@ -260,7 +231,7 @@ export default function QuestionEditor({
           value={editedQuestion.body}
           onChange={(e) => handleChange("body", e.target.value)}
           placeholder="Enter your question here..."
-          className="mb-4 rounded-top-0 border-top-0"
+          className="mb-4 border-secondary"
         />
 
         {/* Answers Section */}
@@ -278,7 +249,7 @@ export default function QuestionEditor({
               >
                 <div
                   style={{ width: "120px", cursor: "pointer" }}
-                  onClick={() => handleChoiceChange(idx, "isCorrect", true)}
+                  onClick={() => handleChoiceChange(choice._id, "isCorrect", true)}
                   className={choice.isCorrect ? "text-success fw-bold" : "text-muted"}
                 >
                   {choice.isCorrect ? "→ Correct Answer" : "Possible Answer"}
@@ -286,7 +257,7 @@ export default function QuestionEditor({
                 <Form.Control
                   type="text"
                   value={choice.text}
-                  onChange={(e) => handleChoiceChange(idx, "text", e.target.value)}
+                  onChange={(e) => handleChoiceChange(choice._id, "text", e.target.value)}
                   placeholder={`Answer ${idx + 1}`}
                   style={{ maxWidth: "300px" }}
                 />
@@ -294,7 +265,7 @@ export default function QuestionEditor({
                   <Button
                     variant="link"
                     className="text-danger p-0"
-                    onClick={() => deleteChoice(idx)}
+                    onClick={() => deleteChoice(choice._id)}
                   >
                     <FaTrash />
                   </Button>
@@ -321,7 +292,7 @@ export default function QuestionEditor({
                 key={choice._id}
                 className="d-flex align-items-center gap-2 mb-2"
                 style={{ cursor: "pointer" }}
-                onClick={() => handleChoiceChange(idx, "isCorrect", true)}
+                onClick={() => handleChoiceChange(choice._id, "isCorrect", true)}
               >
                 <span className={choice.isCorrect ? "text-success" : ""}>
                   {choice.isCorrect ? "→" : ""}
@@ -342,14 +313,14 @@ export default function QuestionEditor({
                 key={idx}
                 className="d-flex align-items-center gap-3 mb-3"
               >
-                <div style={{ width: "120px" }} className="text-muted">
-                  Possible Answer:
+                <div style={{ width: "120px" }} className="text-success">
+                  Correct Answer:
                 </div>
                 <Form.Control
                   type="text"
                   value={answer}
                   onChange={(e) => updateBlankAnswer(idx, e.target.value)}
-                  placeholder="Enter possible answer"
+                  placeholder="Enter correct answer"
                   style={{ maxWidth: "300px" }}
                 />
                 {(editedQuestion.blanks?.[0]?.answers?.length || 0) > 1 && (

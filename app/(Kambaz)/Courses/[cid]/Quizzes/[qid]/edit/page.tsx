@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Form,
-  Row,
-  Col,
   Tabs,
   Tab,
   Alert,
@@ -19,48 +17,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../../store";
 import { v4 as uuidv4 } from "uuid";
 import QuestionEditor from "./QuestionEditor";
-
-type Choice = {
-  _id: string;
-  text: string;
-  isCorrect: boolean;
-};
-
-type Question = {
-  _id: string;
-  type: "mcq" | "tf" | "fill";
-  title: string;
-  body: string;
-  points: number;
-  choices: Choice[];
-  blanks?: { _id: string; answers: string[] }[];
-};
-
-type Quiz = {
-  _id: string;
-  course: string;
-  title: string;
-  description?: string;
-  points?: number;
-  dueDate?: string;
-  availableDate?: string;
-  untilDate?: string;
-  published?: boolean;
-  questions?: Question[];
-  settings?: {
-    quizType?: string;
-    assignmentGroup?: string;
-    shuffleAnswers?: boolean;
-    timeLimitMinutes?: number;
-    multipleAttempts?: boolean;
-    maxAttempts?: number;
-    showCorrectAnswers?: string;
-    accessCode?: string;
-    oneQuestionAtATime?: boolean;
-    webcamRequired?: boolean;
-    lockQuestionsAfterAnswering?: boolean;
-  };
-};
+import { Quiz, Question, Choice } from "../../types";
 
 export default function QuizEditor() {
   const params = useParams() as { cid?: string; qid?: string };
@@ -73,13 +30,10 @@ export default function QuizEditor() {
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("details");
-  const [newQuestionIds, setNewQuestionIds] = useState<Set<string>>(new Set());
-  const [timeLimitEnabled, setTimeLimitEnabled] = useState(false);
 
-  const isFaculty = currentUser?.role === "FACULTY";
+  const timeLimitEnabled = !!quiz?.settings?.timeLimitMinutes;
 
   const fetchQuiz = async () => {
     if (!cid || !qid) return;
@@ -87,7 +41,6 @@ export default function QuizEditor() {
       setLoading(true);
       const data = await getQuiz(cid, qid);
       setQuiz(data);
-      setTimeLimitEnabled(!!data.settings?.timeLimitMinutes);
       setError(null);
     } catch (err: any) {
       console.error("Error fetching quiz:", err);
@@ -101,37 +54,25 @@ export default function QuizEditor() {
     fetchQuiz();
   }, [cid, qid]);
 
-  useEffect(() => {
-    if (!isFaculty && !loading) {
-      router.push(`/Courses/${cid}/Quizzes`);
-    }
-  }, [isFaculty, loading, cid, router]);
-
   const calculateTotalPoints = (questions: Question[]) => {
     return questions.reduce((sum, q) => sum + (q.points || 0), 0);
   };
 
-  const handleSave = async (andPublish = false) => {
+  const handleSave = async () => {
     if (!quiz) return;
     try {
-      setSaving(true);
       setError(null);
 
       const totalPoints = calculateTotalPoints(quiz.questions || []);
       const updatedQuiz = { ...quiz, points: totalPoints };
 
       await updateQuiz(cid, updatedQuiz);
-
-      if (andPublish) {
-        await publishQuiz(cid, quiz._id);
-        router.push(`/Courses/${cid}/Quizzes`);
-      } else {
-        router.push(`/Courses/${cid}/Quizzes/${qid}`);
-      }
+      
+      // Only navigate away if save succeeded
+      router.push(`/Courses/${cid}/Quizzes/${qid}`);
     } catch (err: any) {
       console.error("Error saving quiz:", err);
       setError(err.response?.data?.error || "Failed to save quiz");
-      setSaving(false);
     }
   };
 
@@ -183,34 +124,21 @@ export default function QuizEditor() {
       ...quiz,
       questions: [...(quiz.questions || []), newQuestion],
     });
-    setNewQuestionIds(new Set([...newQuestionIds, newId]));
   };
 
-  const updateQuestion = (index: number, updatedQuestion: Question) => {
+  const updateQuestion = (id: string, updatedQuestion: Question) => {
     if (!quiz) return;
-    const questions = [...(quiz.questions || [])];
-    questions[index] = updatedQuestion;
+    const questions = (quiz.questions || []).map((q) =>
+      q._id === id ? updatedQuestion : q
+    );
     setQuiz({ ...quiz, questions });
-    setNewQuestionIds((prev) => {
-      const next = new Set(prev);
-      next.delete(updatedQuestion._id);
-      return next;
-    });
   };
 
-  const deleteQuestion = (index: number) => {
+  const deleteQuestion = (id: string) => {
     if (!quiz) return;
     if (!confirm("Are you sure you want to delete this question?")) return;
-    const questions = [...(quiz.questions || [])];
-    const deleted = questions.splice(index, 1);
+    const questions = (quiz.questions || []).filter((q) => q._id !== id);
     setQuiz({ ...quiz, questions });
-    if (deleted[0]) {
-      setNewQuestionIds((prev) => {
-        const next = new Set(prev);
-        next.delete(deleted[0]._id);
-        return next;
-      });
-    }
   };
 
   if (loading) {
@@ -220,14 +148,6 @@ export default function QuizEditor() {
           <span className="visually-hidden">Loading...</span>
         </div>
       </div>
-    );
-  }
-
-  if (!isFaculty) {
-    return (
-      <Alert variant="danger" className="m-3">
-        Only faculty can edit quizzes
-      </Alert>
     );
   }
 
@@ -261,9 +181,6 @@ export default function QuizEditor() {
         <Badge bg={quiz.published ? "success" : "secondary"} className="me-2">
           {quiz.published ? "Published" : "Not Published"}
         </Badge>
-        <Button variant="link" className="text-secondary p-0">
-          <FaEllipsisV />
-        </Button>
       </div>
 
       <hr className="mt-0" />
@@ -278,6 +195,7 @@ export default function QuizEditor() {
         <Tab eventKey="details" title="Details">
           <Form>
             {/* Quiz Title */}
+            <Form.Label className="text-muted small">Quiz Title:</Form.Label>
             <Form.Group className="mb-4">
               <Form.Control
                 type="text"
@@ -291,16 +209,6 @@ export default function QuizEditor() {
             {/* Quiz Instructions Label */}
             <Form.Label className="text-muted small">Quiz Instructions:</Form.Label>
 
-            {/* Simple toolbar mock */}
-            <div className="border rounded-top p-2 bg-light d-flex gap-3 small">
-              <span>Edit</span>
-              <span>View</span>
-              <span>Insert</span>
-              <span>Format</span>
-              <span>Tools</span>
-              <span>Table</span>
-            </div>
-
             {/* Description textarea */}
             <Form.Group className="mb-4">
               <Form.Control
@@ -309,18 +217,18 @@ export default function QuizEditor() {
                 value={quiz.description || ""}
                 onChange={(e) => handleChange("description", e.target.value)}
                 placeholder="Enter quiz instructions here..."
-                className="border-top-0 rounded-top-0"
+                className="border-secondary"
               />
             </Form.Group>
 
             {/* Centered section for Quiz Type, Assignment Group, Options, Assign */}
-            <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+            <div className="mx-auto" style={{ maxWidth: "800px" }}>
               {/* Quiz Type */}
               <div className="d-flex align-items-center mb-3 gap-3">
-                <div style={{ width: "150px", textAlign: "right", flexShrink: 0 }}>
+                <div className="text-end flex-shrink-0" style={{ width: "150px" }}>
                   <Form.Label className="mb-0">Quiz Type</Form.Label>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="flex-grow-1">
                   <Form.Select
                     value={quiz.settings?.quizType || "graded"}
                     onChange={(e) => handleSettingsChange("quizType", e.target.value)}
@@ -335,10 +243,10 @@ export default function QuizEditor() {
 
               {/* Assignment Group */}
               <div className="d-flex align-items-center mb-4 gap-3">
-                <div style={{ width: "150px", textAlign: "right", flexShrink: 0 }}>
+                <div className="text-end flex-shrink-0" style={{ width: "150px" }}>
                   <Form.Label className="mb-0">Assignment Group</Form.Label>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="flex-grow-1">
                   <Form.Select
                     value={quiz.settings?.assignmentGroup || "quizzes"}
                     onChange={(e) =>
@@ -375,7 +283,6 @@ export default function QuizEditor() {
                       label="Time Limit"
                       checked={timeLimitEnabled}
                       onChange={(e) => {
-                        setTimeLimitEnabled(e.target.checked);
                         if (!e.target.checked) {
                           handleSettingsChange("timeLimitMinutes", null);
                         } else {
@@ -434,28 +341,11 @@ export default function QuizEditor() {
 
               {/* Assign Section */}
               <div className="d-flex mb-4 gap-3">
-                <div style={{ width: "150px", textAlign: "right", flexShrink: 0 }}>
+                <div className="text-end flex-shrink-0" style={{ width: "150px" }}>
                   <Form.Label className="mb-0">Assign</Form.Label>
                 </div>
-                <div style={{ flex: 1 }}>
+                <div className="flex-grow-1">
                   <div className="border rounded p-3">
-                    {/* Assign to */}
-                    <Form.Group className="mb-3">
-                      <Form.Label className="fw-bold">Assign to</Form.Label>
-                      <div className="border rounded p-2 d-flex align-items-center">
-                        <Badge
-                          bg="light"
-                          text="dark"
-                          className="d-flex align-items-center gap-1 border"
-                        >
-                          Everyone
-                          <span style={{ cursor: "pointer" }} className="ms-1">
-                            ×
-                          </span>
-                        </Badge>
-                      </div>
-                    </Form.Group>
-
                     {/* Due Date */}
                     <Form.Group className="mb-3">
                       <Form.Label className="fw-bold">Due</Form.Label>
@@ -472,7 +362,7 @@ export default function QuizEditor() {
 
                     {/* Available from and Until */}
                     <div className="d-flex gap-3">
-                      <Form.Group className="mb-3" style={{ flex: 1 }}>
+                      <Form.Group className="mb-3 flex-grow-1">
                         <Form.Label className="fw-bold">Available from</Form.Label>
                         <Form.Control
                           type="datetime-local"
@@ -488,7 +378,7 @@ export default function QuizEditor() {
                           }
                         />
                       </Form.Group>
-                      <Form.Group className="mb-3" style={{ flex: 1 }}>
+                      <Form.Group className="mb-3 flex-grow-1">
                         <Form.Label className="fw-bold">Until</Form.Label>
                         <Form.Control
                           type="datetime-local"
@@ -533,23 +423,20 @@ export default function QuizEditor() {
 
             <div className="text-muted">
               {quiz.questions?.length || 0} Question
-              {quiz.questions?.length !== 1 ? "s" : ""} | {totalPoints} pts
+              {quiz.questions?.length !== 1 ? "s" : ""}
             </div>
           </div>
 
           {/* Questions List */}
-          {!quiz.questions || quiz.questions.length === 0 ? (
-            <div></div>
-          ) : (
+          {quiz.questions && (
             <div>
               {quiz.questions.map((question, index) => (
                 <QuestionEditor
                   key={question._id}
                   question={question}
                   questionIndex={index}
-                  onUpdate={(updated) => updateQuestion(index, updated)}
-                  onDelete={() => deleteQuestion(index)}
-                  isNew={newQuestionIds.has(question._id)}
+                  onUpdate={(updated) => updateQuestion(question._id, updated)}
+                  onDelete={() => deleteQuestion(question._id)}
                 />
               ))}
             </div>
@@ -564,17 +451,15 @@ export default function QuizEditor() {
           variant="light"
           className="border px-4"
           onClick={handleCancel}
-          disabled={saving}
         >
           Cancel
         </Button>
         <Button
           variant="danger"
           className="px-4"
-          onClick={() => handleSave(false)}
-          disabled={saving}
+          onClick={() => handleSave()}
         >
-          {saving ? "Saving..." : "Save"}
+          {"Save"}
         </Button>
       </div>
     </div>

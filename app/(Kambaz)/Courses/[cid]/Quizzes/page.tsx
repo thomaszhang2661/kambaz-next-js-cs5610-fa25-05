@@ -1,14 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ListGroup,
-  ListGroupItem,
-  Dropdown,
-  Badge,
-} from "react-bootstrap";
+import { ListGroup, ListGroupItem, Dropdown, Badge } from "react-bootstrap";
 import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
-import { RiFileList3Line } from "react-icons/ri";
 import QuizzesControls from "./QuizzesControls";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -22,39 +16,17 @@ import {
 } from "../../client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
-
-type Quiz = {
-  _id: string;
-  course: string;
-  title: string;
-  description?: string;
-  points?: number;
-  dueDate?: string;
-  availableDate?: string;
-  untilDate?: string;
-  published?: boolean;
-  questions?: any[];
-};
-
-type Attempt = {
-  _id: string;
-  quiz: string;
-  user: string;
-  score: number;
-  totalPoints: number;
-  attemptNumber: number;
-  createdAt: string;
-};
+import { RiFileList3Line } from "react-icons/ri";
+import { Quiz, Attempt } from "./types";
 
 export default function Quizzes() {
   const params = useParams() as { cid?: string };
-  const cid = params?.cid || "";
+  const cid = params.cid || "";
   const router = useRouter();
   const { currentUser } = useSelector(
-    (state: RootState) => (state as any).accountReducer
+    (state: RootState) => state.accountReducer
   );
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [userAttempts, setUserAttempts] = useState<Record<string, Attempt[]>>(
     {}
   );
@@ -208,32 +180,15 @@ export default function Quizzes() {
     return sorted[0];
   };
 
-  const filteredQuizzes = quizzes.filter((q) =>
-    q.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div id="wd-quizzes">
       <QuizzesControls
         onAddQuiz={handleCreateQuiz}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
         isFaculty={isFaculty}
       />
       <hr />
 
-      {filteredQuizzes.length === 0 ? (
-        <div className="text-center text-muted py-5">
-          <RiFileList3Line size={48} className="mb-3 opacity-50" />
-          <p className="fs-5">No quizzes yet</p>
-          {isFaculty && (
-            <p>
-              Click the <strong>+ Quiz</strong> button above to create your
-              first quiz.
-            </p>
-          )}
-        </div>
-      ) : (
+      {(
         <ListGroup className="rounded-0" id="wd-quizzes-list">
           <ListGroupItem className="wd-quiz-group p-0 mb-4 fs-5 border-gray">
             <div className="wd-title p-3 ps-2 bg-secondary d-flex justify-content-between align-items-center">
@@ -244,7 +199,7 @@ export default function Quizzes() {
             </div>
 
             <ListGroup className="wd-quiz-items rounded-0">
-              {filteredQuizzes.map((quiz) => {
+              {quizzes.map((quiz) => {
                 const availability = getAvailabilityStatus(quiz);
                 const questionsCount = quiz.questions?.length || 0;
                 const lastAttempt = !isFaculty
@@ -254,7 +209,7 @@ export default function Quizzes() {
                 return (
                   <ListGroupItem
                     key={quiz._id}
-                    className="wd-quiz-list-item p-3 ps-1 d-flex justify-content-between align-items-start"
+                    className="p-3 ps-1 d-flex justify-content-between align-items-start"
                   >
                     <div className="d-flex align-items-start w-100">
                       <BsGripVertical className="me-2 fs-3 mt-1" />
@@ -263,8 +218,12 @@ export default function Quizzes() {
                       <div className="flex-grow-1">
                         <div className="d-flex align-items-center gap-2 mb-1">
                           <Link
-                            href={isFaculty ? `/Courses/${cid}/Quizzes/${quiz._id}` : `/Courses/${cid}/Quizzes/${quiz._id}/take`}
-                            className="wd-quiz-link text-decoration-none text-dark fw-bold"
+                            href={
+                              isFaculty
+                                ? `/Courses/${cid}/Quizzes/${quiz._id}`
+                                : `/Courses/${cid}/Quizzes/${quiz._id}/take`
+                            }
+                            className="text-decoration-none text-dark fw-bold"
                           >
                             {quiz.title}
                           </Link>
@@ -294,7 +253,7 @@ export default function Quizzes() {
                           )}
                         </div>
 
-                        <div className="wd-quiz-details small text-muted">
+                        <div className="small text-muted">
                           <span className={availability.className}>
                             <strong>{availability.status}</strong>
                           </span>
@@ -324,7 +283,7 @@ export default function Quizzes() {
                       <Dropdown align="end">
                         <Dropdown.Toggle
                           variant="link"
-                          className="text-dark p-0 border-0"
+                          className="text-dark"
                           id={`quiz-dropdown-${quiz._id}`}
                         >
                           <BsThreeDotsVertical className="fs-4" />
@@ -363,4 +322,3 @@ export default function Quizzes() {
     </div>
   );
 }
-
