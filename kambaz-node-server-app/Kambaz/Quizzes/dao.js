@@ -10,6 +10,12 @@ export default function QuizzesDao(db) {
   const isConnected = () =>
     mongoose.connection && mongoose.connection.readyState === 1;
 
+  // async function findQuizzesForCourse(courseId) {
+  //   if (isConnected()) return QuizModel.find({ course: courseId });
+  //   return Promise.resolve(
+  //     (db.quizzes || []).filter((q) => q.course === courseId)
+  //   );
+  // }
   async function findQuizzesForCourse(courseId) {
     if (isConnected()) return QuizModel.find({ course: courseId }).sort({ availableDate: 1 });
     return Promise.resolve(
