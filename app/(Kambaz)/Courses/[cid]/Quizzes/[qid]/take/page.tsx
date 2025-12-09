@@ -90,8 +90,27 @@ export default function QuizTakeOrPreview() {
   const [previewScore, setPreviewScore] = useState<{ score: number; total: number } | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
   const [startTime] = useState(new Date());
+  const [shuffledChoices, setShuffledChoices] = useState<Record<string, Choice[]>>({});
 
   const isFaculty = currentUser?.role === "FACULTY";
+
+  // Shuffle function using Fisher-Yates algorithm
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Get choices for a question (shuffled if enabled, original otherwise)
+  const getChoicesForQuestion = (question: Question): Choice[] => {
+    if (quiz?.settings?.shuffleAnswers && shuffledChoices[question._id]) {
+      return shuffledChoices[question._id];
+    }
+    return question.choices || [];
+  };
 
   const fetchQuizAndAttempts = async () => {
     if (!cid || !qid) return;
@@ -99,6 +118,17 @@ export default function QuizTakeOrPreview() {
       setLoading(true);
       const quizData = await getQuiz(cid, qid);
       setQuiz(quizData);
+
+      // Initialize shuffled choices if shuffleAnswers is enabled
+      if (quizData.settings?.shuffleAnswers && quizData.questions) {
+        const shuffled: Record<string, Choice[]> = {};
+        quizData.questions.forEach((question: Question) => {
+          if (question.choices && question.choices.length > 0) {
+            shuffled[question._id] = shuffleArray(question.choices);
+          }
+        });
+        setShuffledChoices(shuffled);
+      }
 
       // Set time limit (only for students, faculty preview has no time limit)
       if (!isFaculty && quizData.settings?.timeLimitMinutes) {
@@ -197,13 +227,25 @@ export default function QuizTakeOrPreview() {
           score += question.points || 0;
         }
       } else if (question.type === "fill") {
-        const correctAnswers = question.blanks?.[0]?.answers || [];
-        const isCorrect = correctAnswers.some(
-          (ans) =>
-            ans.toLowerCase().trim() ===
-            String(userAnswer || "").toLowerCase().trim()
-        );
-        if (isCorrect) {
+        // Check if all blanks are answered correctly
+        const blanks = question.blanks || [];
+        let allBlanksCorrect = blanks.length > 0;
+        
+        for (const blank of blanks) {
+          const userBlankAnswer = (userAnswer as any)?.[blank._id];
+          const correctAnswers = blank.answers || [];
+          const isBlankCorrect = correctAnswers.some(
+            (ans) =>
+              ans.toLowerCase().trim() ===
+              String(userBlankAnswer || "").toLowerCase().trim()
+          );
+          if (!isBlankCorrect) {
+            allBlanksCorrect = false;
+            break;
+          }
+        }
+        
+        if (allBlanksCorrect) {
           score += question.points || 0;
         }
       }
@@ -286,12 +328,23 @@ export default function QuizTakeOrPreview() {
       const correctChoice = question.choices?.find((c) => c.isCorrect);
       return correctChoice?._id === userAnswer;
     } else if (question.type === "fill") {
-      const correctAnswers = question.blanks?.[0]?.answers || [];
-      return correctAnswers.some(
-        (ans) =>
-          ans.toLowerCase().trim() ===
-          String(userAnswer || "").toLowerCase().trim()
-      );
+      // Check if all blanks are answered correctly
+      const blanks = question.blanks || [];
+      if (blanks.length === 0) return false;
+      
+      for (const blank of blanks) {
+        const userBlankAnswer = (userAnswer as any)?.[blank._id];
+        const correctAnswers = blank.answers || [];
+        const isBlankCorrect = correctAnswers.some(
+          (ans) =>
+            ans.toLowerCase().trim() ===
+            String(userBlankAnswer || "").toLowerCase().trim()
+        );
+        if (!isBlankCorrect) {
+          return false;
+        }
+      }
+      return true;
     }
     return false;
   };
@@ -361,7 +414,9 @@ export default function QuizTakeOrPreview() {
           const correctChoice = question.choices?.find((c) => c.isCorrect);
           const correctAnswer =
             question.type === "fill"
-              ? question.blanks?.[0]?.answers?.join(" or ") || ""
+              ? (question.blanks || []).map((blank, idx) => 
+                  `Blank ${idx + 1}: ${blank.answers?.join(" or ") || ""}`
+                ).join("; ")
               : correctChoice?.text || "";
 
           return (
@@ -391,7 +446,7 @@ export default function QuizTakeOrPreview() {
 
                 {(question.type === "mcq" || question.type === "tf") && (
                   <div>
-                    {question.choices?.map((choice) => {
+                    {getChoicesForQuestion(question).map((choice) => {
                       const isUserAnswer = choice._id === userAnswer;
                       const isCorrectChoice = choice.isCorrect;
                       return (
@@ -435,17 +490,29 @@ export default function QuizTakeOrPreview() {
 
                 {question.type === "fill" && (
                   <div>
-                    <p>
-                      <strong>Your answer:</strong>{" "}
-                      <span className={correct ? "text-success" : "text-danger"}>
-                        {userAnswer || "(no answer)"}
-                      </span>
-                    </p>
-                    {!correct && (
-                      <p className="text-success">
-                        <strong>Correct answer(s):</strong> {correctAnswer}
-                      </p>
-                    )}
+                    {(question.blanks || []).map((blank, blankIdx) => {
+                      const userBlankAnswer = (userAnswer as any)?.[blank._id] || "(no answer)";
+                      const isBlankCorrect = blank.answers?.some(
+                        (ans) =>
+                          ans.toLowerCase().trim() ===
+                          String((userAnswer as any)?.[blank._id] || "").toLowerCase().trim()
+                      );
+                      return (
+                        <div key={blank._id} className="mb-2">
+                          <p className="mb-1">
+                            <strong>Blank {blankIdx + 1} - Your answer:</strong>{" "}
+                            <span className={isBlankCorrect ? "text-success" : "text-danger"}>
+                              {userBlankAnswer}
+                            </span>
+                          </p>
+                          {!isBlankCorrect && (
+                            <p className="text-success mb-0 ms-3">
+                              <small>Correct: {blank.answers?.join(" or ")}</small>
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </Card.Body>
@@ -512,7 +579,9 @@ export default function QuizTakeOrPreview() {
           const correctChoice = question.choices?.find((c) => c.isCorrect);
           const correctAnswer =
             question.type === "fill"
-              ? question.blanks?.[0]?.answers?.join(" or ") || ""
+              ? (question.blanks || []).map((blank, idx) => 
+                  `Blank ${idx + 1}: ${blank.answers?.join(" or ") || ""}`
+                ).join("; ")
               : correctChoice?.text || "";
 
           return (
@@ -542,7 +611,7 @@ export default function QuizTakeOrPreview() {
 
                 {(question.type === "mcq" || question.type === "tf") && (
                   <div>
-                    {question.choices?.map((choice) => {
+                    {getChoicesForQuestion(question).map((choice) => {
                       const isUserAnswer = choice._id === userAnswer;
                       const isCorrectChoice = choice.isCorrect;
                       return (
@@ -711,7 +780,7 @@ export default function QuizTakeOrPreview() {
 
                 {currentQuestion.type === "mcq" && (
                   <div>
-                    {currentQuestion.choices?.map((choice) => (
+                    {getChoicesForQuestion(currentQuestion).map((choice) => (
                       <Form.Check
                         key={choice._id}
                         type="radio"
@@ -730,7 +799,7 @@ export default function QuizTakeOrPreview() {
 
                 {currentQuestion.type === "tf" && (
                   <div>
-                    {currentQuestion.choices?.map((choice) => (
+                    {getChoicesForQuestion(currentQuestion).map((choice) => (
                       <Form.Check
                         key={choice._id}
                         type="radio"
@@ -748,14 +817,29 @@ export default function QuizTakeOrPreview() {
                 )}
 
                 {currentQuestion.type === "fill" && (
-                  <Form.Control
-                    type="text"
-                    value={answers[currentQuestion._id] || ""}
-                    onChange={(e) =>
-                      handleAnswerChange(currentQuestion._id, e.target.value)
-                    }
-                    placeholder="Type your answer here..."
-                  />
+                  <div>
+                    {(currentQuestion.blanks || []).map((blank, blankIdx) => (
+                      <div key={blank._id} className="mb-3">
+                        <Form.Label>
+                          <strong>Blank {blankIdx + 1}:</strong>
+                        </Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={
+                            (answers[currentQuestion._id] as any)?.[blank._id] || ""
+                          }
+                          onChange={(e) => {
+                            const currentAnswers = answers[currentQuestion._id] || {};
+                            handleAnswerChange(currentQuestion._id, {
+                              ...currentAnswers,
+                              [blank._id]: e.target.value,
+                            });
+                          }}
+                          placeholder={`Enter answer for blank ${blankIdx + 1}...`}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 )}
               </Card.Body>
             </Card>

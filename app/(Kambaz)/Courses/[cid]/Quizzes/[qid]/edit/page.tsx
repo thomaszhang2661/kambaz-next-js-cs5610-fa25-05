@@ -76,6 +76,28 @@ export default function QuizEditor() {
     }
   };
 
+  const handleSaveAndPublish = async () => {
+    if (!quiz) return;
+    try {
+      setError(null);
+
+      const totalPoints = calculateTotalPoints(quiz.questions || []);
+      const updatedQuiz = { ...quiz, points: totalPoints };
+
+      // Save the quiz first
+      await updateQuiz(cid, updatedQuiz);
+      
+      // Then publish it
+      await publishQuiz(cid, qid);
+      
+      // Navigate back to quiz list
+      router.push(`/Courses/${cid}/Quizzes`);
+    } catch (err: any) {
+      console.error("Error saving and publishing quiz:", err);
+      setError(err.response?.data?.error || "Failed to save and publish quiz");
+    }
+  };
+
   const handleCancel = () => {
     router.push(`/Courses/${cid}/Quizzes`);
   };
@@ -94,7 +116,7 @@ export default function QuizEditor() {
   };
 
   // Question management
-  const addQuestion = (type: "mcq" | "tf" | "fill" = "mcq") => {
+  const addQuestion = async (type: "mcq" | "tf" | "fill" = "mcq") => {
     if (!quiz) return;
     const newId = uuidv4();
     const newQuestion: Question = {
@@ -120,25 +142,44 @@ export default function QuizEditor() {
       blanks:
         type === "fill" ? [{ _id: uuidv4(), answers: [""] }] : undefined,
     };
-    setQuiz({
+    const updatedQuiz = {
       ...quiz,
       questions: [...(quiz.questions || []), newQuestion],
-    });
+    };
+    setQuiz(updatedQuiz);
+    
+    // Save to backend
+    try {
+      const totalPoints = calculateTotalPoints(updatedQuiz.questions || []);
+      await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
+    } catch (err: any) {
+      console.error("Error saving new question:", err);
+      setError(err.response?.data?.error || "Failed to save question");
+    }
   };
 
-  const updateQuestion = (id: string, updatedQuestion: Question) => {
+  const updateQuestion = async (id: string, updatedQuestion: Question) => {
     if (!quiz) return;
     const questions = (quiz.questions || []).map((q) =>
       q._id === id ? updatedQuestion : q
     );
-    setQuiz({ ...quiz, questions });
+    const updatedQuiz = { ...quiz, questions };
+    setQuiz(updatedQuiz);
+    
+    // Save to backend
+    const totalPoints = calculateTotalPoints(questions);
+    await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
   };
 
-  const deleteQuestion = (id: string) => {
+  const deleteQuestion = async (id: string) => {
     if (!quiz) return;
-    if (!confirm("Are you sure you want to delete this question?")) return;
     const questions = (quiz.questions || []).filter((q) => q._id !== id);
-    setQuiz({ ...quiz, questions });
+    const updatedQuiz = { ...quiz, questions };
+    setQuiz(updatedQuiz);
+    
+    // Save to backend
+    const totalPoints = calculateTotalPoints(questions);
+    await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
   };
 
   if (loading) {
@@ -418,6 +459,13 @@ export default function QuizEditor() {
                 <Dropdown.Item onClick={() => addQuestion("fill")}>
                   Fill in the Blank
                 </Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item disabled className="text-muted">
+                  <small>+ New Question Group (Optional)</small>
+                </Dropdown.Item>
+                <Dropdown.Item disabled className="text-muted">
+                  <small>+ Find Questions (Optional)</small>
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 
@@ -455,11 +503,18 @@ export default function QuizEditor() {
           Cancel
         </Button>
         <Button
-          variant="danger"
+          variant="secondary"
           className="px-4"
           onClick={() => handleSave()}
         >
-          {"Save"}
+          Save
+        </Button>
+        <Button
+          variant="success"
+          className="px-4"
+          onClick={() => handleSaveAndPublish()}
+        >
+          Save & Publish
         </Button>
       </div>
     </div>

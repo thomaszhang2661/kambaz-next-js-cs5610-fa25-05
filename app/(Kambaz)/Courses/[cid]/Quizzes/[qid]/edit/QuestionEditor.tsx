@@ -13,8 +13,8 @@ import { Question, Choice } from "../../types";
 interface QuestionEditorProps {
   question: Question;
   questionIndex: number;
-  onUpdate: (question: Question) => void;
-  onDelete: () => void;
+  onUpdate: (question: Question) => Promise<void>;
+  onDelete: () => Promise<void>;
   isNew?: boolean;
 }
 
@@ -27,6 +27,8 @@ export default function QuestionEditor({
 }: QuestionEditorProps) {
   const [isEditing, setIsEditing] = useState(isNew);
   const [editedQuestion, setEditedQuestion] = useState<Question>({ ...question });
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
 
   const handleTypeChange = (newType: "mcq" | "tf" | "fill") => {
@@ -104,47 +106,79 @@ export default function QuestionEditor({
     setEditedQuestion({ ...editedQuestion, choices });
   };
 
-  // For fill in blank - manage individual answers
-  const addBlankAnswer = () => {
-    const currentAnswers = editedQuestion.blanks?.[0]?.answers || [];
+  // For fill in blank - manage blanks and their answers
+  const addBlank = () => {
     const blanks = [
-      {
-        _id: editedQuestion.blanks?.[0]?._id || uuidv4(),
-        answers: [...currentAnswers, ""],
-      },
+      ...(editedQuestion.blanks || []),
+      { _id: uuidv4(), answers: [""] },
     ];
     setEditedQuestion({ ...editedQuestion, blanks });
   };
 
-  const updateBlankAnswer = (index: number, value: string) => {
-    const currentAnswers = editedQuestion.blanks?.[0]?.answers || [];
-    const newAnswers = [...currentAnswers];
-    newAnswers[index] = value;
-    const blanks = [
-      {
-        _id: editedQuestion.blanks?.[0]?._id || uuidv4(),
-        answers: newAnswers,
-      },
-    ];
+  const deleteBlank = (blankId: string) => {
+    const blanks = (editedQuestion.blanks || []).filter((b) => b._id !== blankId);
+    // Keep at least one blank
+    if (blanks.length === 0) {
+      blanks.push({ _id: uuidv4(), answers: [""] });
+    }
     setEditedQuestion({ ...editedQuestion, blanks });
   };
 
-  const deleteBlankAnswer = (index: number) => {
-    const currentAnswers = editedQuestion.blanks?.[0]?.answers || [];
-    if (currentAnswers.length <= 1) return;
-    const newAnswers = currentAnswers.filter((_, i) => i !== index);
-    const blanks = [
-      {
-        _id: editedQuestion.blanks?.[0]?._id || uuidv4(),
-        answers: newAnswers,
-      },
-    ];
+  const addAnswerToBlank = (blankId: string) => {
+    const blanks = (editedQuestion.blanks || []).map((blank) =>
+      blank._id === blankId
+        ? { ...blank, answers: [...blank.answers, ""] }
+        : blank
+    );
     setEditedQuestion({ ...editedQuestion, blanks });
   };
 
-  const handleSave = () => {
-    onUpdate(editedQuestion);
-    setIsEditing(false);
+  const updateBlankAnswer = (blankId: string, answerIndex: number, value: string) => {
+    const blanks = (editedQuestion.blanks || []).map((blank) => {
+      if (blank._id === blankId) {
+        const newAnswers = [...blank.answers];
+        newAnswers[answerIndex] = value;
+        return { ...blank, answers: newAnswers };
+      }
+      return blank;
+    });
+    setEditedQuestion({ ...editedQuestion, blanks });
+  };
+
+  const deleteBlankAnswer = (blankId: string, answerIndex: number) => {
+    const blanks = (editedQuestion.blanks || []).map((blank) => {
+      if (blank._id === blankId) {
+        const newAnswers = blank.answers.filter((_, i) => i !== answerIndex);
+        // Keep at least one answer per blank
+        if (newAnswers.length === 0) newAnswers.push("");
+        return { ...blank, answers: newAnswers };
+      }
+      return blank;
+    });
+    setEditedQuestion({ ...editedQuestion, blanks });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onUpdate(editedQuestion);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to save question:", error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this question?")) return;
+    setDeleting(true);
+    try {
+      await onDelete();
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+      setDeleting(false);
+    }
   };
 
   const handleCancel = () => {
@@ -173,8 +207,13 @@ export default function QuestionEditor({
             >
               Edit
             </Button>
-            <Button variant="outline-danger" size="sm" onClick={onDelete}>
-              <FaTrash />
+            <Button 
+              variant="outline-danger" 
+              size="sm" 
+              onClick={handleDelete}
+              disabled={deleting}
+            >
+              {deleting ? "..." : <FaTrash />}
             </Button>
           </div>
         </Card.Body>
@@ -308,39 +347,76 @@ export default function QuestionEditor({
         {/* Fill in the Blank Answers */}
         {editedQuestion.type === "fill" && (
           <div className="mb-3">
-            {(editedQuestion.blanks?.[0]?.answers || [""]).map((answer, idx) => (
-              <div
-                key={idx}
-                className="d-flex align-items-center gap-3 mb-3"
-              >
-                <div style={{ width: "120px" }} className="text-success">
-                  Correct Answer:
-                </div>
-                <Form.Control
-                  type="text"
-                  value={answer}
-                  onChange={(e) => updateBlankAnswer(idx, e.target.value)}
-                  placeholder="Enter correct answer"
-                  style={{ maxWidth: "300px" }}
-                />
-                {(editedQuestion.blanks?.[0]?.answers?.length || 0) > 1 && (
-                  <Button
-                    variant="link"
-                    className="text-danger p-0"
-                    onClick={() => deleteBlankAnswer(idx)}
-                  >
-                    <FaTrash />
-                  </Button>
-                )}
-              </div>
+            {(editedQuestion.blanks || []).map((blank, blankIdx) => (
+              <Card key={blank._id} className="mb-3 border-secondary">
+                <Card.Body>
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Blank {blankIdx + 1}</strong>
+                    {(editedQuestion.blanks?.length || 0) > 1 && (
+                      <Button
+                        variant="link"
+                        className="text-danger p-0"
+                        onClick={() => deleteBlank(blank._id)}
+                      >
+                        <FaTrash /> Remove Blank
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="mb-2">
+                    <small className="text-muted">
+                      Possible Correct Answers (student answer must match one of these):
+                    </small>
+                  </div>
+                  
+                  {blank.answers.map((answer, answerIdx) => (
+                    <div
+                      key={answerIdx}
+                      className="d-flex align-items-center gap-3 mb-2"
+                    >
+                      <div style={{ width: "100px" }} className="text-success small">
+                        Answer {answerIdx + 1}:
+                      </div>
+                      <Form.Control
+                        as="textarea"
+                        rows={1}
+                        value={answer}
+                        onChange={(e) => updateBlankAnswer(blank._id, answerIdx, e.target.value)}
+                        placeholder="Enter correct answer"
+                        style={{ maxWidth: "400px" }}
+                      />
+                      {blank.answers.length > 1 && (
+                        <Button
+                          variant="link"
+                          className="text-danger p-0"
+                          onClick={() => deleteBlankAnswer(blank._id, answerIdx)}
+                        >
+                          <FaTrash />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  
+                  <div className="text-end mt-2">
+                    <Button
+                      variant="link"
+                      className="text-primary p-0 small"
+                      onClick={() => addAnswerToBlank(blank._id)}
+                    >
+                      <FaPlus className="me-1" /> Add Another Answer for this Blank
+                    </Button>
+                  </div>
+                </Card.Body>
+              </Card>
             ))}
-            <div className="text-end">
+            
+            <div className="text-center">
               <Button
-                variant="link"
-                className="text-danger p-0"
-                onClick={addBlankAnswer}
+                variant="outline-secondary"
+                size="sm"
+                onClick={addBlank}
               >
-                <FaPlus className="me-1" /> Add Another Answer
+                <FaPlus className="me-1" /> Add Another Blank
               </Button>
             </div>
           </div>
@@ -348,11 +424,11 @@ export default function QuestionEditor({
 
         {/* Action Buttons */}
         <div className="d-flex gap-2 pt-3 border-top">
-          <Button variant="light" className="border" onClick={handleCancel}>
+          <Button variant="light" className="border" onClick={handleCancel} disabled={saving}>
             Cancel
           </Button>
-          <Button variant="secondary" onClick={handleSave}>
-            Update Question
+          <Button variant="success" onClick={handleSave} disabled={saving}>
+            {saving ? "Saving..." : "Save Question"}
           </Button>
         </div>
       </Card.Body>
