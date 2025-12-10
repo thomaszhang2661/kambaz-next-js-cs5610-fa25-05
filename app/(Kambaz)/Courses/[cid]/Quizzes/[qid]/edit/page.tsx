@@ -58,17 +58,17 @@ export default function QuizEditor() {
     return questions.reduce((sum, q) => sum + (q.points || 0), 0);
   };
 
+  // Shared save function - saves quiz to backend
+  const saveQuiz = async (quizToSave: Quiz) => {
+    const totalPoints = calculateTotalPoints(quizToSave.questions || []);
+    await updateQuiz(cid, { ...quizToSave, points: totalPoints });
+  };
+
   const handleSave = async () => {
     if (!quiz) return;
     try {
       setError(null);
-
-      const totalPoints = calculateTotalPoints(quiz.questions || []);
-      const updatedQuiz = { ...quiz, points: totalPoints };
-
-      await updateQuiz(cid, updatedQuiz);
-      
-      // Only navigate away if save succeeded
+      await saveQuiz(quiz);
       router.push(`/Courses/${cid}/Quizzes/${qid}`);
     } catch (err: any) {
       console.error("Error saving quiz:", err);
@@ -80,17 +80,8 @@ export default function QuizEditor() {
     if (!quiz) return;
     try {
       setError(null);
-
-      const totalPoints = calculateTotalPoints(quiz.questions || []);
-      const updatedQuiz = { ...quiz, points: totalPoints };
-
-      // Save the quiz first
-      await updateQuiz(cid, updatedQuiz);
-      
-      // Then publish it
+      await saveQuiz(quiz);
       await publishQuiz(cid, qid);
-      
-      // Navigate back to quiz list
       router.push(`/Courses/${cid}/Quizzes`);
     } catch (err: any) {
       console.error("Error saving and publishing quiz:", err);
@@ -147,15 +138,7 @@ export default function QuizEditor() {
       questions: [...(quiz.questions || []), newQuestion],
     };
     setQuiz(updatedQuiz);
-    
-    // Save to backend
-    try {
-      const totalPoints = calculateTotalPoints(updatedQuiz.questions || []);
-      await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
-    } catch (err: any) {
-      console.error("Error saving new question:", err);
-      setError(err.response?.data?.error || "Failed to save question");
-    }
+    await saveQuiz(updatedQuiz);
   };
 
   const updateQuestion = async (id: string, updatedQuestion: Question) => {
@@ -165,10 +148,7 @@ export default function QuizEditor() {
     );
     const updatedQuiz = { ...quiz, questions };
     setQuiz(updatedQuiz);
-    
-    // Save to backend
-    const totalPoints = calculateTotalPoints(questions);
-    await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
+    await saveQuiz(updatedQuiz);
   };
 
   const deleteQuestion = async (id: string) => {
@@ -176,10 +156,7 @@ export default function QuizEditor() {
     const questions = (quiz.questions || []).filter((q) => q._id !== id);
     const updatedQuiz = { ...quiz, questions };
     setQuiz(updatedQuiz);
-    
-    // Save to backend
-    const totalPoints = calculateTotalPoints(questions);
-    await updateQuiz(cid, { ...updatedQuiz, points: totalPoints });
+    await saveQuiz(updatedQuiz);
   };
 
   if (loading) {

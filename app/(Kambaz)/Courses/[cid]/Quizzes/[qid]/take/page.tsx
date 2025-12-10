@@ -655,17 +655,29 @@ export default function QuizTakeOrPreview() {
 
                 {question.type === "fill" && (
                   <div>
-                    <p>
-                      <strong>Your answer:</strong>{" "}
-                      <span className={correct ? "text-success" : "text-danger"}>
-                        {userAnswer}
-                      </span>
-                    </p>
-                    {!correct && (
-                      <p className="text-success">
-                        <strong>Correct answer(s):</strong> {correctAnswer}
-                      </p>
-                    )}
+                    {(question.blanks || []).map((blank, blankIdx) => {
+                      const userBlankAnswer = (userAnswer as any)?.[blank._id] || "(no answer)";
+                      const isBlankCorrect = blank.answers?.some(
+                        (ans) =>
+                          ans.toLowerCase().trim() ===
+                          String((userAnswer as any)?.[blank._id] || "").toLowerCase().trim()
+                      );
+                      return (
+                        <div key={blank._id} className="mb-2">
+                          <p className="mb-1">
+                            <strong>Blank {blankIdx + 1} - Your answer:</strong>{" "}
+                            <span className={isBlankCorrect ? "text-success" : "text-danger"}>
+                              {userBlankAnswer}
+                            </span>
+                          </p>
+                          {!isBlankCorrect && (
+                            <p className="text-success mb-0 ms-3">
+                              <small>Correct: {blank.answers?.join(" or ")}</small>
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </Card.Body>
